@@ -116,6 +116,47 @@ Hver beslutning dokumenteres slik:
 
 ---
 
+## [2025-12-03] MCP Servere installert for General AI
+
+**Kontekst**: General AI trengte MCP (Model Context Protocol) servere for utvidede capabilities som browser-automasjon, oppdatert dokumentasjon og filesystem-tilgang.
+
+**Beslutning**: Installere Context7, Playwright og Filesystem MCP servere med user scope.
+
+**Implementasjon**:
+```bash
+# Context7 - Up-to-date dokumentasjon
+claude mcp add context7 -s user -- npx -y @upstash/context7-mcp@latest
+
+# Playwright - Browser-automasjon
+claude mcp add playwright -s user -- npx @playwright/mcp@latest
+
+# Filesystem - Filoperasjoner
+claude mcp add filesystem -s user -- npx -y @modelcontextprotocol/server-filesystem /home/ronny
+```
+
+**Installerte servere**:
+1. **Context7** - Dynamisk henter oppdatert dokumentasjon
+2. **Playwright** - Browser-automasjon via accessibility tree
+3. **Filesystem** - Les/skriv filer i /home/ronny på tvers av prosjekter
+
+**Scope**: User-level - tilgjengelig i alle Claude Code prosjekter
+
+**Verifisert**: Alle servere ✓ Connected
+
+**Begrunnelse**:
+- Context7: Alltid oppdatert dokumentasjon
+- Playwright: Web scraping for pris-sjekker, testing
+- Filesystem: Les/skriv på tvers av prosjekter
+
+**Konsekvenser**:
+- General AI kan nå automatisere browser-oppgaver
+- Får alltid oppdatert dokumentasjon
+- Kan jobbe med filer utenfor CWD
+
+**Status**: Aktiv
+
+---
+
 ## Template for fremtidige beslutninger
 
 Bruk formatet over når du dokumenterer nye tekniske beslutninger.
