@@ -77,6 +77,45 @@ Hver beslutning dokumenteres slik:
 
 ---
 
+## [2025-12-03] GitHub integration for General AI
+
+**Kontekst**: General AI trengte tilgang til GitHub for å kunne pushe/pulle, opprette issues, bygge wiki, og generelt fungere som en ordentlig CTO-agent.
+
+**Beslutning**: Sette opp SSH keys for General AI og gi tilgang til GitHub repo.
+
+**Implementasjon**:
+- Generert ed25519 SSH key pair for `general-ai@saghaugen.no`
+- Public key lagt til på GitHub under Ronny's account
+- GitHub repo opprettet: `github.com/Rsmerud/saghaugen-General-AI`
+- Remote konfigurert og første push fullført
+
+**Begrunnelse**:
+- General AI må kunne committe/pushe autonomt
+- Issues og wiki på GitHub gir bedre oversikt enn bare lokale filer
+- GitHub blir single source of truth for alle agenter
+- PR workflow muliggjør review av agent-endringer
+
+**Alternativer vurdert**:
+1. **Lokal Git kun**: Fungerer, men ingen remote backup eller synk mellom agenter
+2. **Self-hosted GitLab/Gitea**: Overkill for hobbyprosjekt, krever vedlikehold
+3. **GitHub (valgt)**: Gratis, pålitelig, alle kjenner det
+
+**Konsekvenser**:
+- General AI kan nå pushe endringer direkte til GitHub
+- Historikk bevares og er tilgjengelig fra hvor som helst
+- React-HA og fremtidige agenter kan også få GitHub-tilgang
+- Wiki kan brukes for mer omfattende dokumentasjon
+
+**Neste steg**:
+- Sette opp GitHub Issues templates
+- Bygge Wiki for detaljert dokumentasjon
+- Vurdere GitHub Projects for task tracking
+- Gi React-HA tilgang når han migreres
+
+**Status**: Aktiv
+
+---
+
 ## Template for fremtidige beslutninger
 
 Bruk formatet over når du dokumenterer nye tekniske beslutninger.
