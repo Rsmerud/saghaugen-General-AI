@@ -96,32 +96,64 @@
 - **Fremtidig**: Fiber bestilt (leveringsdato uklar)
 - **Plan**: Starlink, UDM og switcher monteres i låve når fiber kommer
 
+### VPN/Nettverk-tunneler
+- **ZeroTier VPN**: Saghaugen ↔ Jobb-servere
+- **Formål**: Off-site backup, failover, ressursdeling
+- **Status**: Aktivt
+
 ### Nettverksutstyr
 - **Unifi**: UDM + switcher (hovedsakelig)
 - **MikroTik**: Også i bruk (Ronny liker begge merkene)
 - **Lokasjon nå**: Provisorisk i huset
 - **Fremtidig lokasjon**: Låven
+- **Subnet**: 10.12.0.0/24 (lokal)
 
 ### Tilganger
-- **Ronny**: Full tilgang til alt
+- **Ronny**: Full tilgang til alt (Saghaugen + jobb-servere)
+- **Lasse (kollega)**: Administrerer jobb-servere sammen med Ronny
 - **React-HA agent**: Passwordless SSH til Proxmox og alle VM/LXC
-- **General AI**: Kjører på Proxmox, ingen SSH-tilganger enda
+- **General AI**:
+  - Kjører på Proxmox (10.12.0.205)
+  - SSH-tilgang: Under oppsett (root@10.12.0.205)
 
 ---
 
 ## Virtualisering og Servere
 
-### Proxmox (nåværende host)
-- **Hardware**: [Må dokumenteres]
-- **Rolle**: Midlertidig host for nesten alle VM/LXC
-- **Status**: General AI kjører her
-- **Plan**: Flytte alle VM/LXC til HP EliteDesk når den får Proxmox
+### Proxmox (nåværende MIDLERTIDIG host)
+- **Hardware**: HP mini-PC med i7 prosessor
+- **IP**: 10.12.0.205
+- **Eierskap**: TILHØRER JOBBEN (ikke Saghaugen permanent)
+- **Rolle**: Midlertidig host under migrasjonsperiode
+- **Status**: Kjører ~12 VM/LXC inkl. General AI
+- **Plan**: Alle VM/LXC skal flyttes til HP EliteDesk når den får Proxmox
+- **Kritisk**: Dette er en overgangsløsning, ikke permanent infrastruktur!
 
-### HP EliteDesk 800 G3
-- **Tidligere**: ESXi maskin
+### HP EliteDesk 800 G3 (fremtidig PERMANENT host)
+- **Tidligere**: Kjører ESXi
 - **Plan**: Reinstalleres med Proxmox
-- **Når**: Snart™
-- **Hensikt**: Bli primær host for alle VM/LXC
+- **Når**: Kommer snart
+- **Hensikt**: Bli PERMANENT primær host for alle Saghaugen VM/LXC
+- **Status**: Avventer reinstallasjon
+
+### Jobb-servere (eksternt tilgjengelig via ZeroTier)
+**Antall**: 3 stk heavy duty servere
+**Lokasjon**: Ronnys jobb
+**Specs per server**:
+- ~48 kjerner (CPU)
+- 1TB RAM hver
+- Speiling (RAID)
+- UPS (backup strøm)
+
+**Tilkobling**: ZeroTier VPN mellom Saghaugen og jobb
+**Administrasjon**: Ronny + Lasse (kollega/kameraet)
+
+**Bruksområder for Saghaugen**:
+- **Backup**: Kjøre backuper av Saghaugen VM/LXC ut av huset
+- **Failover**: Enkelte tjenester kan kjøres på jobb ved behov
+- **Heavy lifting**: Tunge oppgaver som trenger mer ressurser
+
+**Kritisk**: Dette gir Saghaugen redundans og off-site backup!
 
 ### VM/LXC Oversikt
 **Status**: ✅ Fullstendig dokumentert av React-HA agent
@@ -283,20 +315,45 @@
 
 ---
 
+## Backup og Redundans-strategi
+
+### Off-site backup (via ZeroTier til jobb)
+- **Hva**: VM/LXC backuper fra Saghaugen
+- **Hvor**: Jobb-servere (3x 1TB RAM, 48 kjerner, speiling, UPS)
+- **Hvorfor**: Brannsikring, tyveri-sikring, redundans
+- **Status**: Tilgjengelig infrastruktur, må konfigureres
+
+### Failover muligheter
+- **Kritiske tjenester** kan kjøres midlertidig på jobb-servere ved:
+  - Strømbrudd på Saghaugen (utover UPS-tid)
+  - Hardware-feil på Proxmox
+  - Nettverk-utfall
+- **Tilgjengelig kapasitet**: 3x servere med massive ressurser
+
+### Fremtidig: Lokal backup på Saghaugen
+- Når solceller + batterier + aggregat er på plass
+- Lokal backup-disk/NAS
+- Kombinert med off-site backup på jobb
+
+---
+
 ## Kritiske Hull i Dokumentasjonen
 
-**Status etter React-HA integrasjon (2025-12-03):**
+**Status etter React-HA integrasjon + jobb-server info (2025-12-03):**
 
 Dokumentert ✅:
 1. ~~**Sikringsskap**~~ - ✅ Fullstendig dokumentert (24 kurs, 3 ledige)
 2. ~~**VM/LXC**~~ - ✅ Fullstendig liste med IP-adresser
+3. ~~**Jobb-servere**~~ - ✅ 3x heavy duty, ZeroTier, backup-kapasitet
+4. ~~**Proxmox midlertidig status**~~ - ✅ Tilhører jobb, skal erstattes
 
 Gjenstår ❌:
-3. **Crestron**: Hvilke enheter? Hvordan konfigurert?
-4. **Zigbee/Z-wave**: Hvilke spesifikke enheter? (vet at Conbee II + Aeotec Z-Stick 7 er gatewayer)
-5. **Proxmox hardware**: CPU, RAM, disk?
-6. **HP EliteDesk specs**: CPU, RAM, disk?
-7. **KNX**: Hvilke enheter utover gulvvarme?
+5. **Crestron**: Hvilke enheter? Hvordan konfigurert?
+6. **Zigbee/Z-wave**: Hvilke spesifikke enheter? (vet at Conbee II + Aeotec Z-Stick 7 er gatewayer)
+7. **HP mini-PC (nåværende Proxmox)**: CPU, RAM, disk specs?
+8. **HP EliteDesk specs**: CPU, RAM, disk?
+9. **KNX**: Hvilke enheter utover gulvvarme?
+10. **Jobb-servere**: Detaljerte specs, backup-konfigurasjon
 
 **Strategi**: Fylles inn gradvis når agenter trenger informasjonen eller når Ronny gir info.
 
