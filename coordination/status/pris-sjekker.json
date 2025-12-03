@@ -1,0 +1,15 @@
+{
+  "agent": "pris-sjekker",
+  "timestamp": "2025-12-03T09:30:00Z",
+  "status": "idle",
+  "current_tasks": [],
+  "completed_searches": 0,
+  "issues": [],
+  "dependencies": [
+    "internet-connection",
+    "web-search-tool",
+    "web-fetch-tool"
+  ],
+  "last_search": null,
+  "notes": "Agent opprettet og klar for testing. Venter på første søk-forespørsel."
+}

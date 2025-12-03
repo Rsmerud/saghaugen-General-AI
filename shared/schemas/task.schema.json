@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task",
+  "description": "Schema for task assignment and tracking",
+  "type": "object",
+  "required": ["task_id", "title", "assigned_to", "priority", "description", "created", "status"],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^TASK-[0-9]{3,}$",
+      "description": "Unique task identifier (e.g., TASK-001)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short, descriptive title"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Agent identifier this task is assigned to"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low"],
+      "description": "Task priority"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of what needs to be done"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Other agents or systems this task depends on"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the task was created"
+    },
+    "started": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When work on the task started"
+    },
+    "completed": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the task was completed"
+    },
+    "deadline": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Optional deadline for task completion"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in-progress", "completed", "blocked", "cancelled"],
+      "description": "Current status of the task"
+    },
+    "blocked_by": {
+      "type": "string",
+      "description": "What is blocking this task (if status is 'blocked')"
+    },
+    "result": {
+      "type": "object",
+      "description": "Result/outcome of the task (when completed)",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of changes made"
+        }
+      }
+    },
+    "created_by": {
+      "type": "string",
+      "description": "Agent or person who created this task"
+    }
+  }
+}

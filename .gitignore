@@ -1,0 +1,90 @@
+# Secrets og sensitive data
+*.key
+*.pem
+*.cert
+*.crt
+*secret*
+*password*
+*credentials*
+.env
+.env.*
+
+# Agent-spesifikke secrets
+agents/*/config/*secret*
+agents/*/config/*password*
+agents/*/config/.env
+
+# Shared secrets (disse skal ALDRI committes)
+shared/configs/*secret*
+shared/configs/*password*
+shared/configs/.env
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*~
+
+# OS-spesifikke filer
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE/Editor spesifikke
+.vscode/
+.idea/
+*.sublime-*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Backup filer (backupes utenfor Git)
+*.bak
+*.backup
+backups/
+
+# Dokumenter som kan inneholde personlig info
+# (commit kun templates og eksempler)
+coordination/logs/*.log
+coordination/tasks/completed/*
+# Behold pending og in-progress tasks i Git for sporbarhet
+
+# Status-filer oppdateres ofte, kan være nice å ha i Git
+# men unngå if de inneholder sensitive metrics
+# coordination/status/*.json
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Test coverage
+.coverage
+htmlcov/
+*.cover
+
+# Proxmox/Infrastructure secrets
+infrastructure/*/secrets/
+infrastructure/*/*.key
+
+# Dokumenter med personlig info
+# La Paperless-ngx håndtere disse, ikke i Git
+documents/
+scanned/

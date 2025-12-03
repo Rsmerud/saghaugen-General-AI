@@ -1,0 +1,19 @@
+{
+  "agent": "react-ha",
+  "timestamp": "2025-12-02T12:00:00Z",
+  "status": "operational",
+  "current_tasks": [
+    "Onboarding til multi-agent arkitektur"
+  ],
+  "issues": [],
+  "dependencies": [
+    "mqtt-broker",
+    "homeassistant-prod",
+    "homeassistant-test",
+    "proxmox-host"
+  ],
+  "last_deployment": null,
+  "metrics": {
+    "note": "Metrics will be populated when agent is active"
+  }
+}

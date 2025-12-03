@@ -1,0 +1,110 @@
+{
+  "updated": "2025-12-03T09:30:00Z",
+  "location": "Saghaugen, Slåstad, Norge",
+  "overall_status": "operational",
+  "agents": {
+    "total": 2,
+    "operational": 2,
+    "degraded": 0,
+    "down": 0,
+    "maintenance": 0
+  },
+  "active_agents": [
+    {
+      "name": "react-ha",
+      "status": "operational",
+      "responsibilities": [
+        "HomeAssistant (prod + test)",
+        "Node-Red",
+        "Grafana + InfluxDB",
+        "Chirpstack",
+        "Paperless-ngx",
+        "Dashboards"
+      ]
+    },
+    {
+      "name": "pris-sjekker",
+      "status": "idle",
+      "responsibilities": [
+        "Product price research",
+        "Availability checking",
+        "Supplier comparison"
+      ],
+      "criticality": "non-critical",
+      "note": "Test agent for developing multi-agent workflow"
+    }
+  ],
+  "infrastructure": {
+    "proxmox_hosts": [
+      {
+        "name": "Current Proxmox Host",
+        "status": "operational",
+        "note": "Midlertidig host, migrering til HP EliteDesk planlagt"
+      },
+      {
+        "name": "HP EliteDesk 800 G3",
+        "status": "awaiting-reinstall",
+        "note": "Skal reinstalleres med Proxmox, deretter ta over som primær host"
+      }
+    ],
+    "vm_lxc_count": "~11",
+    "network": {
+      "isp": "Starlink",
+      "fiber_status": "bestilt, leveringsdato uklar",
+      "primary_equipment": "Unifi (UDM + switches)",
+      "secondary_equipment": "MikroTik"
+    }
+  },
+  "critical_systems": [
+    {
+      "name": "HomeAssistant Production",
+      "status": "operational",
+      "owner": "react-ha"
+    },
+    {
+      "name": "KNX IP Interface",
+      "status": "operational",
+      "owner": "none (manual for nå)"
+    },
+    {
+      "name": "MQTT Broker",
+      "status": "operational",
+      "owner": "none (TBD)"
+    }
+  ],
+  "recent_changes": [
+    {
+      "date": "2025-12-03",
+      "change": "Pris-sjekker agent opprettet",
+      "impact": "Test agent for å utvikle multi-agent workflow før driftskritiske agenter"
+    },
+    {
+      "date": "2025-12-02",
+      "change": "Multi-agent arkitektur etablert",
+      "impact": "Strukturert koordinering av agenter"
+    },
+    {
+      "date": "2025-08",
+      "change": "Flyttet inn på Saghaugen",
+      "impact": "Alt er under etablering"
+    }
+  ],
+  "pending_migrations": [
+    {
+      "description": "HP EliteDesk reinstallasjon med Proxmox",
+      "priority": "medium",
+      "blocker": "Tid og prioritering vs andre prosjekter"
+    },
+    {
+      "description": "Flytte nettverksutstyr (Starlink, UDM, switches) til låve",
+      "priority": "low",
+      "blocker": "Venter på fiber + isolering av låve"
+    }
+  ],
+  "notes": [
+    "Bad er 97% ferdig, gulvvarme-programmering (KNX) gjenstår",
+    "Entre-panel (React dashboard) er provisorisk til gulv skiftes vår 2026",
+    "Kjøkken er neste store prosjekt",
+    "Mye infrastruktur er provisorisk plassert i hus, skal til låve på sikt"
+  ]
+}

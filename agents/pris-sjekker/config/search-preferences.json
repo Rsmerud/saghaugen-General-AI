@@ -1,0 +1,44 @@
+{
+  "preferred_suppliers": {
+    "elektronikk": [
+      "elektroimportoren.no",
+      "kjell.com",
+      "elfasonett.no",
+      "el-service.no",
+      "electrosupply.no"
+    ],
+    "byggevarer": [
+      "byggmakker.no",
+      "maxbo.no",
+      "jula.no",
+      "biltema.no",
+      "bygghjemme.no"
+    ],
+    "spesialisert": [
+      "conrad.no",
+      "elfadistrelec.no"
+    ],
+    "internasjonale": [
+      "mouser.no",
+      "digikey.no"
+    ]
+  },
+  "search_strategy": {
+    "default_timeout_seconds": 30,
+    "max_suppliers_to_check": 8,
+    "prioritize_norwegian": true,
+    "include_international_if_not_found": false
+  },
+  "price_preferences": {
+    "include_vat": true,
+    "currency": "NOK",
+    "flag_unusual_prices": true,
+    "unusual_threshold_percent": 30
+  },
+  "reporting": {
+    "include_urls": true,
+    "include_availability": true,
+    "include_delivery_time": true,
+    "max_results_per_supplier": 3
+  }
+}
