@@ -51,7 +51,7 @@ Jeg er Home Assistant-spesialist for Saghaugen. General AI er CTO og tar overord
 
 | System | VMID | IP | Port | Status | Kritisk |
 |--------|------|----|----|--------|---------|
-| **Home Assistant Prod** | ? | 10.12.0.20 | 8123 | ✅ Prod | ⚠️ KRITISK |
+| **Home Assistant Prod** | 103 | 10.12.0.20 | 8123 | ✅ Prod | ⚠️ KRITISK |
 | **Home Assistant Test** | ? | 10.12.0.9 | 8123 | ✅ Test | Nei |
 | **Node-RED** | ? | 10.12.0.24 | 1880 | ✅ Running | ⚠️ KRITISK |
 | **Grafana** | ? | 10.12.0.108 | 3000 | ✅ Running | Nei |
@@ -82,29 +82,46 @@ Jeg er Home Assistant-spesialist for Saghaugen. General AI er CTO og tar overord
 ## 🏠 HOME ASSISTANT - PRODUKSJON
 
 **IP**: 10.12.0.20:8123
-**OS**: Ubuntu 22.04 LTS VM
-**Installasjon**: Home Assistant Core (ikke Container/Supervised)
-**SSH**: `ssh homeassistant@10.12.0.20` (passwordless med ~/.ssh/id_ed25519_ha)
-**Root passord**: 4pn44SJAg
+**VMID**: 103 (VM, ikke LXC)
+**OS**: Home Assistant OS 16.3 (HAOS) - IKKE Ubuntu!
+**Installasjon**: Home Assistant OS (full appliance med Supervisor)
+**Config path**: `/mnt/data/supervisor/homeassistant/`
 
-### SSH-tilgang
+### Tilgangsmetoder (prioritert rekkefølge)
+
+**1. QEMU Guest Agent via Proxmox (FUNGERER ✅)**
 ```bash
-# Fra ~/.ssh/config
-Host homeassistant 10.12.0.20
-    HostName 10.12.0.20
-    User homeassistant
-    IdentityFile ~/.ssh/id_ed25519_ha
-    IdentitiesOnly yes
+# Kjør kommandoer direkte på HA via Proxmox
+ssh root@10.12.0.205 "qm guest exec 103 -- <kommando>"
+
+# Eksempler:
+ssh root@10.12.0.205 "qm guest exec 103 -- cat /mnt/data/supervisor/homeassistant/automations.yaml"
+ssh root@10.12.0.205 "qm guest exec 103 -- ha core restart"
 ```
 
-### Viktige mapper
-- `/config/` - ALLE konfigurasjonsfiler
-- `/config/automations.yaml` - Auto-genererte automations fra UI
-- `/config/scripts.yaml` - Scripts
-- `/config/configuration.yaml` - Hovedkonfig (inkludert input_boolean helpers)
-- `/config/.storage/` - UI-genererte configs, entity registry, etc.
-- `/config/custom_components/` - HACS og custom integrations
-- `/config/www/` - Static files (logos, etc.)
+**2. HA CLI (inne på VM)**
+```bash
+# Via QEMU agent
+ssh root@10.12.0.205 "qm guest exec 103 -- ha core restart"
+ssh root@10.12.0.205 "qm guest exec 103 -- ha supervisor info"
+```
+
+**3. SSH addon (IKKE SATT OPP)**
+- Krever at SSH addon installeres i HA
+- Foreløpig ikke konfigurert
+
+**4. REST API (krever token)**
+- Trenger long-lived access token fra HA UI
+- Token ikke lagret i General AI enda
+
+### Viktige mapper (HAOS paths)
+- `/mnt/data/supervisor/homeassistant/` - ALLE konfigurasjonsfiler
+- `/mnt/data/supervisor/homeassistant/automations.yaml` - Automations
+- `/mnt/data/supervisor/homeassistant/configuration.yaml` - Hovedkonfig
+- `/mnt/data/supervisor/homeassistant/scripts.yaml` - Scripts
+- `/mnt/data/supervisor/homeassistant/.storage/` - UI-genererte configs
+- `/mnt/data/supervisor/homeassistant/custom_components/` - HACS og custom integrations
+- `/mnt/data/supervisor/homeassistant/www/` - Static files (logos, etc.)
 
 ### Installerte integrasjoner
 - **MQTT** (EMQX @ 10.12.0.22:1883)

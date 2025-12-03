@@ -34,9 +34,19 @@
       "Bash(python3:*)",
       "Bash(curl:*)",
       "Bash(TICKET=PVE:root@pam:693031CA::a5rR5WDYSWQu4kB6COOPsLN+ozpSW3SNo5vIvZgUQKpJDSv1CaKWLbWa6uim05TWFEETWQVrCv8FPTVmhM0mOotNErX/zb2QIG11FLKyDA//VK6hq4xvtXP0TtXSCL/aYkDRAa+JYI7FTqBXb1FdmKvICL3BVb3YUoAJKxe1BJnT0Vbl4fIXAlz9daM3ACvqOD12zx+k+sFygf3DrjniUGSWaoNjX25RdM+dMAOgl29/HxA9RngGB6HYJbwo1ZfpKO44oxrqvFlx4uWzv7Kigh53r6mMjI8G3dZ1s+1aDTk7uHVi9lOkGzEy1HiOoY9Y01x/cFUQHnrbUTIm0Rs9Ug== curl -k -b PVEAuthCookie=$TICKET https://10.12.0.205:8006/api2/json/nodes)",
-      "Bash(TICKET='PVE:root@pam:693031CA::a5rR5WDYSWQu4kB6COOPsLN+ozpSW3SNo5vIvZgUQKpJDSv1CaKWLbWa6uim05TWFEETWQVrCv8FPTVmhM0mOotNErX/zb2QIG11FLKyDA//VK6hq4xvtXP0TtXSCL/aYkDRAa+JYI7FTqBXb1FdmKvICL3BVb3YUoAJKxe1BJnT0Vbl4fIXAlz9daM3ACvqOD12zx+k+sFygf3DrjniUGSWaoNjX25RdM+dMAOgl29/HxA9RngGB6HYJbwo1ZfpKO44oxrqvFlx4uWzv7Kigh53r6mMjI8G3dZ1s+1aDTk7uHVi9lOkGzEy1HiOoY9Y01x/cFUQHnrbUTIm0Rs9Ug==')"
+      "Bash(TICKET='PVE:root@pam:693031CA::a5rR5WDYSWQu4kB6COOPsLN+ozpSW3SNo5vIvZgUQKpJDSv1CaKWLbWa6uim05TWFEETWQVrCv8FPTVmhM0mOotNErX/zb2QIG11FLKyDA//VK6hq4xvtXP0TtXSCL/aYkDRAa+JYI7FTqBXb1FdmKvICL3BVb3YUoAJKxe1BJnT0Vbl4fIXAlz9daM3ACvqOD12zx+k+sFygf3DrjniUGSWaoNjX25RdM+dMAOgl29/HxA9RngGB6HYJbwo1ZfpKO44oxrqvFlx4uWzv7Kigh53r6mMjI8G3dZ1s+1aDTk7uHVi9lOkGzEy1HiOoY9Y01x/cFUQHnrbUTIm0Rs9Ug==')",
+      "Bash(node:*)",
+      "Bash(npm --version:*)",
+      "Bash(claude:*)",
+      "Bash(sshpass -p '4pn44SJAg' ssh -o StrictHostKeyChecking=no root@10.12.0.20 'echo \"\"SSH OK\"\" && cat /home/homeassistant/.ssh/authorized_keys 2>/dev/null | head -5 || echo \"\"Ingen authorized_keys enda\"\"')",
+      "Bash(MY_KEY=\"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMJC6psHByR5D24yc6Nw8b2OOkbOX4QMVZ0tHahzTeAt general-ai@saghaugen.no\":*)"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "playwright",
+    "context7"
+  ]
 }
