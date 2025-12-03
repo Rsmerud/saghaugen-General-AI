@@ -35,6 +35,14 @@ GeneralAI/
 - **Status**: Operativ
 - **Ansvar**: HomeAssistant (prod + test), Node-Red, Grafana, Chirpstack, Paperless-ngx, dashboards
 - **Dokumentasjon**: [agents/react-ha/README.md](agents/react-ha/README.md)
+- **Repo**: [saghaugen-infopanel](https://github.com/Rsmerud/saghaugen-infopanel)
+- **Infrastruktur**: 12+ LXC containere på Proxmox (HA, Frigate, MQTT, ESPHome, Node-RED, Zigbee2MQTT, Z-Wave, ChirpStack, Homepage, Paperless)
+
+### pris-sjekker
+- **Status**: Operativ (test-agent)
+- **Ansvar**: Produktsøk, prissammenligning, tilgjengelighet
+- **Dokumentasjon**: [agents/pris-sjekker/README.md](agents/pris-sjekker/README.md)
+- **Tester**: 1 fullført (låve-vegg materialer)
 
 ### [Fremtidige agenter kommer her]
 
