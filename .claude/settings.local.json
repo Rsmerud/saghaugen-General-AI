@@ -3,7 +3,16 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "WebSearch",
+      "WebFetch(domain:www.byggmax.no)",
+      "WebFetch(domain:www.obsbygg.no)",
+      "WebFetch(domain:www.maxbo.no)",
+      "WebFetch(domain:www.monter.no)",
+      "WebFetch(domain:www.byggtorget.no)",
+      "WebFetch(domain:www.plankepriser.no)"
     ],
     "deny": [],
     "ask": []

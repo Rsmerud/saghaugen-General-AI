@@ -17,8 +17,8 @@ Dette dokumentet holder oversikt over hvilke agenter som jobber med hva AKKURAT 
 ## Pris-Sjekker
 **Status**: Idle
 **Nåværende oppgave**: Ingen
-**Startet**: N/A
-**Forventet ferdig**: N/A
+**Siste oppgave**: Låve-vegg materialer (fullført 2025-12-03 10:30)
+**Resultat**: Se coordination/findings/pris-sjekker/2025-12-03-laave-vegg-materialer.md
 **Avhengigheter**: N/A
 
 ---
@@ -33,11 +33,11 @@ Dette dokumentet holder oversikt over hvilke agenter som jobber med hva AKKURAT 
 ---
 
 ## General AI (meg)
-**Status**: Working
-**Nåværende oppgave**: Sette opp multi-agent strukturen, teste pris-sjekker
-**Startet**: 2025-12-03 09:00
-**Forventet ferdig**: 2025-12-03 12:00 (første test kjørt)
-**Avhengigheter**: Ronny må be om et faktisk produktsøk for testing
+**Status**: Idle
+**Nåværende oppgave**: Ingen - venter på neste oppgave fra Ronny
+**Siste oppgave**: Koordinert pris-sjekk for låve-vegg (fullført 2025-12-03 10:30)
+**Resultat**: Presentert anbefaling til Ronny
+**Avhengigheter**: N/A
 
 ---
 

@@ -187,7 +187,43 @@
 
 ---
 
-## Fremtidige Planer
+## Kommende Prosjekter (Prioritert)
+
+### 1. Kjøkken (Neste store prosjekt)
+- **Status**: Planleggingsfase
+- **Prioritet**: Høy
+- **Notater**: Gammelt kjøkken er nå badet, nytt kjøkken må bygges
+- **Materialer**: TBD (General AI kan søke når Ronny er klar)
+
+### 2. Entre - Gulv og Bjelkelag
+- **Status**: Planlagt vår 2026
+- **Prioritet**: Høy
+- **Notater**: 10" React dashboard panel er provisorisk montert, kommer ned ved gulvskifte
+- **Materialer**: TBD
+
+### 3. Terrasse
+- **Status**: Planleggingsfase
+- **Prioritet**: Medium
+- **Materialer**: TBD
+
+### 4. Uteområde
+- **Status**: Planleggingsfase
+- **Prioritet**: Medium
+- **Notater**: Generell oppgradering/tilrettelegging
+
+### 5. Låve - Isolering 50 kvm (Fase 2)
+- **Status**: Planleggingsfase (kommer senere)
+- **Prioritet**: Medium-lav
+- **Omfang**:
+  - Isolere ytterligere 50 kvm av låven
+  - Bygge ny innevegg
+  - **Resultat**: 80 kvm verksted (30+50) + 50 kvm kaldtlager
+- **Materialer**: Test-søk gjennomført 2025-12-03 (se findings/)
+- **Estimert kostnad**: ~5.000-5.500 kr for treverk + isolasjon
+
+---
+
+## Langsiktige Planer (Ingen konkret tidslinje)
 
 ### Energi
 - Solceller
@@ -196,7 +232,6 @@
 - Aggregat (backup)
 
 ### Bygg
-- Isolere ytterligere 50 kvm av låven
 - Drivhus
 - Orangerie
 - Hønegård
