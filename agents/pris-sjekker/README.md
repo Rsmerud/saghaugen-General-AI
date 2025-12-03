@@ -39,8 +39,29 @@ Kort oppsummert:
 
 ## Avhengigheter
 
+### Primary Tools (tilgjengelig nå):
+- **WebSearch** - Generelt websøk for å finne produktsider og priser
+- **WebFetch** - Henter innhold fra spesifikke URLs (statiske sider)
+
+**Status**: ✅ Fungerer utmerket! Test viste 100% success rate på norske byggevarebutikker.
+
+### MCP Servere (fremtidig support):
+⚠️ **KJENT BUG**: Subagents får foreløpig IKKE tilgang til MCP servere (GitHub Issue #7296)
+
+- **Playwright** (stdio) - Browser-automasjon for web scraping
+  - Kommando: `claude mcp add playwright -- npx @playwright/mcp@latest`
+  - Status: Installert for parent agent (General AI), men ikke tilgjengelig for pris-sjekker
+  - Brukes til: JavaScript-tunge sider, kompleks navigasjon
+  - Workaround: General AI kan kjøre Playwright ved behov
+
+- **Context7** (optional) - Oppdatert dokumentasjon
+  - Kommando: `claude mcp add context7 -s user -- npx -y @upstash/context7-mcp@latest`
+  - Status: Installert, men ikke tilgjengelig for subagent
+
+**Når bug fikses**: Agenten får automatisk tilgang til Playwright → kraftigere scraping!
+
 ### Systemer denne agenten er avhengig av:
-- Internett (WebSearch/WebFetch)
+- Internett (WebSearch/WebFetch primært)
 - Ingen driftskritiske systemer
 
 ### Andre agenter denne agenten samarbeider med:

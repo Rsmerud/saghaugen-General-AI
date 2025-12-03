@@ -157,6 +157,48 @@ claude mcp add filesystem -s user -- npx -y @modelcontextprotocol/server-filesys
 
 ---
 
+## [2025-12-03] Subagents får IKKE tilgang til MCP servere (kjent bug)
+
+**Kontekst**: Testet om pris-sjekker subagent kunne bruke Playwright MCP server for web scraping. Installerte både user-scoped og project-scoped MCP servere.
+
+**Funn**: Pris-sjekker rapporterte eksplisitt: "Playwright - IKKE TILGJENGELIG i min verktøyliste"
+
+**Root cause**: GitHub Issue #7296 - Task-spawnet subagents arver IKKE MCP servere fra parent agent, hverken user-scoped eller project-scoped.
+
+**Beslutning**: Accept current limitation - bruk WebSearch/WebFetch som primary tools for pris-sjekker.
+
+**Begrunnelse**:
+- **WebSearch + WebFetch fungerer forbløffende bra**: Test-kjøring fant priser hos 5 butikker, lagerstatus, kontaktinfo
+- **Playwright trengs sjeldent**: Kun for JavaScript-tunge sider eller kompleks navigasjon
+- **Parent agent kan hjelpe**: Hvis subagent feiler, kan General AI (parent) kjøre Playwright og sende data tilbake
+- **Fremtidssikret**: Når Anthropic fikser buggen, får subagents automatisk tilgang
+
+**Test-resultater** (48x198mm treverk, 15 stk x 3m):
+- Fant priser hos: Obs BYGG Olrud, Byggmax, Montér Stange, Maxbo, Byggmakker
+- Beste pris: ~2.002 kr (Obs BYGG Olrud ubehandlet)
+- Fullstendig data: priser, lagerstatus, telefon, åpningstider, URLs
+
+**Alternativer vurdert**:
+1. **Parent agent kjører Playwright alltid**: Overkill, WebSearch/WebFetch holder
+2. **Blokkere på bug-fix**: Unødvendig, fungerer godt uten
+3. **Accept limitation (valgt)**: WebSearch/WebFetch primary, Playwright future
+
+**Konsekvenser**:
+- Pris-sjekker agent er fullt operativ UTEN Playwright
+- Noen JavaScript-tunge sider kan feile (f.eks. Byggmax produktsider)
+- Workaround: Parent agent (General AI) kan kjøre Playwright ved behov
+- Når bug fikses: Automatisk upgrade til Playwright-support
+
+**Workflow**:
+1. Pris-sjekker bruker WebSearch + WebFetch (rask, fungerer 90% av tiden)
+2. Hvis spesifikke sider feiler, rapporterer tilbake til General AI
+3. General AI kan kjøre Playwright for problematiske sider (manuelt)
+4. Fremtid: Automatisk Playwright-tilgang når Anthropic fikser bug #7296
+
+**Status**: Aktiv - monitoring Anthropic releases for bug-fix
+
+---
+
 ## Template for fremtidige beslutninger
 
 Bruk formatet over når du dokumenterer nye tekniske beslutninger.
