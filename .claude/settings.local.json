@@ -52,7 +52,12 @@
       "Bash(sshpass -p '4pn44SJAg' ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 admin@10.12.0.182 'echo \"\"SSH OK\"\" && hostname')",
       "Bash(sshpass:*)",
       "Bash(nmap:*)",
-      "Bash(nc:*)"
+      "Bash(nc:*)",
+      "Bash(npm install:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_install",
+      "Bash(npx playwright install:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

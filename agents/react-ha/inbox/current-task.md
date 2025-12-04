@@ -8,12 +8,12 @@
 
 ## Oppgave
 
-Commit og push CLAUDE.md endringene dine til GitHub.
+General AI vil teste React dashboardet med Playwright. Trenger tilkoblingsdetaljer:
 
-Commit-melding forslag:
-```
-docs: Oppdatert CLAUDE.md med koordineringsmodell og entity-oversikt
-```
+1. **URL til dashboardet** - Kjører det på dev-server? Hvilken port?
+2. **Er det noe autentisering?** - Trenger jeg token/passord?
+3. **Kjører dashboardet nå?** - Hvis ikke, hvordan starter jeg det?
+4. **Noen spesielle ting å teste?** - Moduler som er ferdig vs. under utvikling?
 
 ---
 
@@ -21,22 +21,62 @@ docs: Oppdatert CLAUDE.md med koordineringsmodell og entity-oversikt
 
 Oppdater denne filen:
 - Sett **Status**: UTFØRT
-- Legg til kort rapport under "Resultat"
+- Fyll ut svarene under "Resultat"
 
 ---
 
 ## Resultat
 
-**Utført 2025-12-05**
+### 1. URL til dashboardet
+- **Dev-server**: `http://localhost:5173` (Vite default)
+- **Prosjektmappe**: `/home/ronny/ClaudeCodeProjects/saghaugen-infopanel/ha-dashboard/`
 
-To commits pushet til GitHub:
-1. `c64ae89` - docs: Add multi-agent coordination and documentation improvements
-   - Koordineringsmodell-seksjon
-   - Dashboard-moduler status-tabell
-   - Home Assistant entities i bruk
-   - Zigbee/Z-Wave enhetsliste med navnekonvensjoner
+### 2. Autentisering
+- **Dashboard selv**: Ingen autentisering (åpent)
+- **Home Assistant API**: Krever `VITE_HA_API_KEY` i `.env`-fil
+- **MERK**: `.env`-fil mangler! Må opprettes med HA token for at API-kall skal fungere
+- Token genereres i HA: Profil → Long-Lived Access Tokens → CREATE TOKEN
 
-2. `82c2c3e` - docs: Add !yo and !status commands for General AI coordination
-   - Lagt til !yo og !status kommandoer i CLAUDE.md
+### 3. Hvordan starte dashboardet
+```bash
+cd /home/ronny/ClaudeCodeProjects/saghaugen-infopanel/ha-dashboard
+npm install  # Første gang
+npm run dev  # Starter på http://localhost:5173
+```
 
-Alle endringer pushet til `origin/master`.
+**OBS**: Trenger `.env`-fil i ha-dashboard/:
+```
+VITE_HA_API_KEY=ditt_home_assistant_token_her
+```
+
+### 4. Hva kan testes
+
+**Ferdig (✅) - Bør teste:**
+| Modul | Test-fokus |
+|-------|-----------|
+| 2D Floorplan | SVG-rendering, klikk på lyskilder |
+| Vær | Forecast-popup, temperaturvisning |
+| Alarm | Keypad-input, status-visning |
+| Scene | Scene-aktivering |
+| Media | Play/pause, volum-slider |
+| Kamera | Live stream, fullscreen |
+
+**Venter (🔄) - Begrenset testing:**
+| Modul | Notater |
+|-------|---------|
+| Energi | Mangler hardware - vil vise placeholder/feil |
+
+**Ikke startet (❌):**
+| Modul | Notater |
+|-------|---------|
+| Kalender | Ikke implementert |
+
+### 5. Viktige filer for testing
+- `src/components/FloorPlan.tsx` - Hovedkomponent
+- `src/components/*Module.tsx` - Alle moduler
+- `src/services/homeAssistant.ts` - API-lag
+
+### 6. Kjente begrensninger
+- **Uten HA-tilkobling**: Moduler vil vise loading/error states
+- **Mock-data**: Finnes ikke - ekte HA kreves for full testing
+- **3D-modus**: Fungerer ikke over RDP (WebGL-limitasjon)
