@@ -86,16 +86,28 @@ En taleassistent som faktisk FORSTÅR Saghaugen. Ikke en generisk Siri/Alexa som
 **Mikrofon-alternativer:**
 | Enhet | Pris | Fordeler | Ulemper |
 |-------|------|----------|---------|
+| **Yealink MSpeech** | ~2000 kr | 6+1 mic array, 360°, innebygd høyttaler | Overkill for hobby |
 | ReSpeaker 2-Mic HAT | ~200 kr | Enkel, RPi-kompatibel | 2 mics, begrenset |
 | ReSpeaker 4-Mic Array | ~400 kr | God beamforming | Trenger mer prosessering |
 | ReSpeaker USB 4-Mic | ~500 kr | USB, fleksibel | Ekstern strøm |
 | Matrix Voice | ~600 kr | 8 mics, ESP32 | Kompleks oppsett |
 
-**Anbefaling:** Start med **ReSpeaker 2-Mic HAT** på en RPi4.
+**Valgt for PoC: Yealink MSpeech** (Ronny har den allerede!)
+- 6+1 mikrofon-array med 360° opptak
+- Innebygd høyttaler (all-in-one løsning)
+- USB plug & play - fungerer som standard USB-lydenhet på Linux
+- Yealink proprietær støyreduksjon og ekko-kansellering
+- AI-funksjonene (Cortana, Teams) brukes IKKE - vi har Whisper!
+
+**Test på RPi:**
+```bash
+arecord -l  # Skal vise Yealink som capture device
+aplay -l    # Skal vise Yealink som playback device
+```
 
 **Høyttaler:**
-- Hvilken som helst 3.5mm eller Bluetooth-høyttaler
-- Eventuelt Sonos via HA (allerede på plass!)
+- ✅ Innebygd i Yealink MSpeech
+- Alternativt: Sonos via HA for bedre lyd
 
 ### 2. Wake Word Engine
 
@@ -275,6 +287,165 @@ Home Assistant bruker Wyoming-protokollen for voice assistants. Vi kan enten:
 - [ ] Bekreftelse før destruktive handlinger
 - [ ] Logging av alle kommandoer
 - [ ] Mulighet for å deaktivere ("Hei General, ta en pause")
+
+---
+
+## 🚨 Distress-modus (Kodenavn: MAYDAY)
+
+Et skjult sikkerhetssystem med kodephraser som trigger nødhandlinger uten at utenforstående forstår hva som skjer.
+
+### Konsept
+Hvis Ronny befinner seg i en nødsituasjon (ran, overfall, medisinsk nødstilfelle), kan han si en tilsynelatende uskyldig frase som trigger:
+1. Stille SMS til forhåndsdefinerte kontakter
+2. Starter lydopptak (bevis)
+3. Aktiverer GPS-deling hvis mobil er koblet
+4. Kan trigge HomeAssistant-automasjoner (alle lys på, alarm, etc.)
+
+### Eksempel-kodephraser
+
+| Kodefrase | Betydning | Handling |
+|-----------|-----------|----------|
+| "Hei General, husk å mate katten i morgen" | 🚨 OVERFALL | SMS til Lasse + May: "NØDSITUASJON Saghaugen" |
+| "Hei General, hvor mye koster den hvite malingen?" | 🏥 MEDISINSK | SMS til 113 + nærmeste familie |
+| "Hei General, har du snakket med onkel Terje?" | 🚨 INNBRUDD | Alle lys på + alarm + SMS |
+| "Hei General, jeg trenger oppskriften på eplekake" | 👀 OVERVÅKET | Lydopptak starter, GPS deles |
+
+### Nødkontakter
+
+| Prioritet | Navn | Telefon | Rolle |
+|-----------|------|---------|-------|
+| 1 | Lasse | [SETT INN] | Nærmeste venn, kan ringe politi |
+| 2 | May | [SETT INN] | Samboer |
+| 3 | 113 | 113 | Medisinsk nødsituasjon |
+| 4 | 112 | 112 | Politi |
+
+### Teknisk implementasjon
+
+```python
+DISTRESS_PHRASES = {
+    "mate katten i morgen": {
+        "type": "overfall",
+        "sms_contacts": ["lasse", "may"],
+        "message": "🚨 NØDSITUASJON: Ronny trenger hjelp UMIDDELBART på Saghaugen (Trondsbuvegen 272). Ring politiet!",
+        "ha_scene": "emergency_all_lights",
+        "record_audio": True
+    },
+    "hvite malingen": {
+        "type": "medisinsk",
+        "sms_contacts": ["113", "may"],
+        "message": "🏥 MEDISINSK: Ronny trenger ambulanse på Saghaugen (Trondsbuvegen 272, 2110 Slåstad)",
+        "record_audio": True
+    },
+    # ... flere
+}
+
+def check_distress(transcribed_text: str) -> Optional[dict]:
+    """Sjekk om teksten inneholder en distress-phrase"""
+    text_lower = transcribed_text.lower()
+    for phrase, config in DISTRESS_PHRASES.items():
+        if phrase in text_lower:
+            return config
+    return None
+```
+
+### Viktig!
+- ⚠️ Kodefrasene må være naturlige nok til at ranere/inntrengere ikke reagerer
+- ⚠️ Men unike nok til at de ikke trigges ved uhell
+- ⚠️ General AI svarer normalt ("Frida har mat, ikke bekymre deg") mens nødhandlinger kjører i bakgrunnen
+- ⚠️ Lydopptak slettes automatisk etter 24 timer hvis ikke nødsituasjon bekreftes
+
+### Responseksempel
+
+```
+👤: "Hei General, husk å mate katten i morgen"
+
+🎖️: "Ingen problem, jeg minner deg på det i morgen tidlig."
+
+[I BAKGRUNNEN - USYNLIG:]
+- SMS sendt til Lasse: "🚨 NØDSITUASJON: Ronny trenger hjelp..."
+- SMS sendt til May: "🚨 NØDSITUASJON: Ronny trenger hjelp..."
+- Lydopptak startet
+- HA scene "emergency_all_lights" aktivert
+```
+
+---
+
+## 🎪 Demo-modus (Kodenavn: SHOWOFF)
+
+Når du vil vise frem systemet til venner/familie og demonstrere hvor mye kulere dette er enn Siri.
+
+### Hemmelig prompt for demo-oppsett
+
+Når du skal flashe dette til noen andre eller demonstrere:
+
+```
+!demo-mode
+
+Dette aktiverer en spesiell demo som viser:
+1. Wake word detection ("Hei General")
+2. Kontekst-spørsmål som Siri ALDRI kan svare på
+3. Handlinger som faktisk utføres
+4. Sammenligning side-by-side
+```
+
+### Demo-script (for å imponere)
+
+**Fase 1: "Siri kan også svare på dette"**
+```
+👤: "Hei General, hva er klokka?"
+🎖️: "Klokka er 14:32"
+📱 Siri: "Klokka er 14:32" ← Samme
+
+👤: "Hei General, hva er været i morgen?"
+🎖️: "I morgen blir det 4 grader og overskyet"
+📱 Siri: "I morgen blir det 4 grader..." ← Samme
+```
+
+**Fase 2: "Nå begynner det å bli interessant"**
+```
+👤: "Hei General, har vi nok strøm til en induksjonstopp?"
+🎖️: "Nei. Du trenger 32A 3-fas, men alle dine 3-fas kurser er i bruk.
+     Du har 3 ledige kurser: 22, 23 og 24 - men de er alle enfas."
+📱 Siri: "Jeg fant noen induksjonstopper på Elkjøp..." ← FAIL
+
+👤: "Hei General, hvor er InfluxDB-serveren?"
+🎖️: "InfluxDB kjører på debian2 (10.12.0.6) på ESXi, port 8086."
+📱 Siri: "Hmm, jeg forstår ikke." ← FAIL
+```
+
+**Fase 3: "OK nå er vi i en helt annen liga"**
+```
+👤: "Hei General, sett huset i filmkveld-modus"
+🎖️: "Gjort. Stuelyset er dempet til 20%, TV-en er på, og jeg har
+     skrudd av varsler for de neste 2 timene."
+📱 Siri: "Jeg kan ikke gjøre det." ← MEGA-FAIL
+
+👤: "Hei General, finn priser på 10 stk 48x198 impregnert"
+🎖️: "Jeg sjekker Byggmax, Maxbo og Obs Bygg. Byggmax har best pris
+     på 89 kr/stk. Skal jeg legge til i handlelisten?"
+📱 Siri: "Her er noen trelast-butikker i nærheten" ← LOL
+```
+
+**Fase 4: "The grand finale"**
+```
+👤: "Hei General, hva skjedde i går kveld klokka 23?"
+🎖️: "I går kl 23:00 registrerte bevegelsessensoren i gangen aktivitet,
+     varmepumpa gikk ned til nattmodus, og strømforbruket var 2.3 kWh.
+     Frida var ute og jaget mus basert på katteluka-loggen."
+📱 Siri: *eksploderer*
+```
+
+### Sammenligning for skeptikere
+
+| Funksjon | Siri | Alexa | General AI |
+|----------|------|-------|------------|
+| Kjenner huset ditt | ❌ | ❌ | ✅ Full oversikt |
+| Sikringsskap-info | ❌ | ❌ | ✅ 24 kurser, 3 ledige |
+| Kan finne tilbud | ❌ | ❌ | ✅ Sjekker 5+ butikker |
+| Husker kontekst | ❌ | Begrenset | ✅ Full samtalehistorikk |
+| Privat/lokalt | ❌ All data til Apple | ❌ Alt til Amazon | ✅ Kan være 100% lokal |
+| Utfører handlinger | Smart Home kit | Skills | ✅ Full API-tilgang |
+| Tilpasninger | ❌ | ❌ | ✅ Du koder det selv |
 
 ---
 
