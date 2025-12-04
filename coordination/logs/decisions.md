@@ -77,6 +77,41 @@ Hver beslutning dokumenteres slik:
 
 ---
 
+## [2025-12-05] Koordineringsmodell mellom General AI og React-HA
+
+**Kontekst**: Forsøkte å etablere direkte kommunikasjon mellom General AI og React-HA. Oppdaget at React-HA ikke har persistent hukommelse mellom samtaler - starter fra scratch hver gang og leser CLAUDE.md for kontekst.
+
+**Beslutning**: Etablere asynkron koordinering via filer med Ronny som formidler:
+- **General AI** = CTO/koordinator med persistent minne (via filer)
+- **React-HA** = Implementør uten persistent minne (leser CLAUDE.md)
+- **Ronny** = Formidler mellom agenter + beslutningstaker
+
+**Arbeidsfordeling CLAUDE.md:**
+- React-HA oppdaterer sin egen CLAUDE.md med React/HA/dashboard-spesifikk info
+- General AI oppdaterer `infrastructure/current-setup.md` med Saghaugen-wide info
+- Briefings til React-HA legges i `agents/react-ha/briefings/`
+
+**Begrunnelse**:
+- React-HA har ikke persistent tilstand - kan ikke huske mellom samtaler
+- Filbasert koordinering fungerer med denne begrensningen
+- Ronny slipper å være "RAM" - General AI tar den rollen
+- Klart skille mellom ansvar reduserer forvirring
+
+**Alternativer vurdert**:
+1. **Direkte agent-til-agent kommunikasjon**: Ikke mulig uten persistent minne
+2. **General AI oppdaterer alt**: For sentralisert, React-HA kjenner sine detaljer best
+3. **Hybrid (valgt)**: Hver agent eier sin dokumentasjon, General AI koordinerer
+
+**Konsekvenser**:
+- React-HA må lese briefings-mappen for oppdateringer fra General AI
+- Ronny formidler verbale beskjeder mellom agenter
+- Git-historikk viser hvem som endret hva
+- Skalerer til flere agenter med samme modell
+
+**Status**: Aktiv
+
+---
+
 ## [2025-12-03] GitHub integration for General AI
 
 **Kontekst**: General AI trengte tilgang til GitHub for å kunne pushe/pulle, opprette issues, bygge wiki, og generelt fungere som en ordentlig CTO-agent.

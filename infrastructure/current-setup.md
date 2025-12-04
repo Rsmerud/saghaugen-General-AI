@@ -1,6 +1,6 @@
 # Saghaugen - Nåværende Infrastruktur
 
-**Sist oppdatert**: 2025-12-03
+**Sist oppdatert**: 2025-12-05
 **Eier**: General AI (holder dette oppdatert basert på agent-rapporter og Ronny's input)
 
 ---
@@ -102,19 +102,70 @@
 - **Status**: Aktivt
 
 ### Nettverksutstyr
-- **Unifi**: UDM + switcher (hovedsakelig)
+- **Unifi UDM-Pro**: 10.12.0.1 (hovedgateway)
+  - SSH: `ssh root@10.12.0.1` (passwordless for General AI)
+  - Hostname: T272-Ronny-Smerud
+- **Unifi Switcher**:
+  - T272SW01Teknisk: 10.12.0.2
+  - T272SW02-Kjkken: 10.12.0.3
+  - T272SW03-Verksted: 10.12.0.200
+- **Unifi AP-er**:
+  - T272AP01-Utendrs: 10.12.0.127
+  - T272AP02-Garasje: 10.12.0.197
+  - T272AP03Kjkken: 10.12.0.181
+  - AP01-Kontor: 10.12.0.196
 - **MikroTik**: Også i bruk (Ronny liker begge merkene)
 - **Lokasjon nå**: Provisorisk i huset
 - **Fremtidig lokasjon**: Låven
 - **Subnet**: 10.12.0.0/24 (lokal)
+
+### Komplett Nettverkskart (per 2025-12-05)
+
+| IP | Hostname | Type | Status |
+|----|----------|------|--------|
+| 10.12.0.1 | T272-Ronny-Smerud | UDM-Pro Gateway | ✅ Prod |
+| 10.12.0.2 | T272SW01Teknisk | Unifi Switch | ✅ Prod |
+| 10.12.0.3 | T272SW02-Kjkken | Unifi Switch | ✅ Prod |
+| 10.12.0.6 | debian2 | ESXi VM (Docker) | ⚠️ Skal avvikles |
+| 10.12.0.9 | debian1 | ESXi VM (gammel HA) | ⚠️ Backup |
+| 10.12.0.20 | homeassistant | HA Prod (VM 103) | ✅ Prod |
+| 10.12.0.21 | frigate | Frigate NVR | ✅ Prod |
+| 10.12.0.22 | emqx | MQTT Broker | ✅ Prod |
+| 10.12.0.24 | node-red | Node-RED | ✅ Prod |
+| 10.12.0.35 | Chromecast | Media | ✅ Prod |
+| 10.12.0.50 | docker-services | Homepage/Portainer | ✅ Prod |
+| 10.12.0.51 | nas | OMV (ESXi) | ⚠️ Skal migreres |
+| 10.12.0.55 | WIN10-ADMIN | Windows VM | ✅ Prod |
+| 10.12.0.65 | SonosZP | Sonos | ✅ Prod |
+| 10.12.0.102 | paperless-ngx | Dokumentarkiv | ✅ Prod |
+| 10.12.0.114 | casaOS | Container mgmt | ❌ Ikke i bruk |
+| 10.12.0.116 | wled-WLED-Gledopto | LED-controller | ✅ Prod |
+| 10.12.0.120 | shellyplusplugs | Shelly plugg | ✅ Prod |
+| 10.12.0.127 | T272AP01-Utendrs | Unifi AP | ✅ Prod |
+| 10.12.0.128 | esphome | ESPHome | ✅ Prod |
+| 10.12.0.145 | claude-agents | General AI (LXC 150) | ✅ Prod |
+| 10.12.0.146 | grafana | Grafana | ✅ Prod |
+| 10.12.0.150 | homebox | Homebox | ✅ Prod |
+| 10.12.0.154 | HageSor | Reolink kamera | ✅ Prod |
+| 10.12.0.155 | Garasje | Reolink kamera | ✅ Prod |
+| 10.12.0.181 | T272AP03Kjkken | Unifi AP | ✅ Prod |
+| 10.12.0.182 | zgate2024-2 | RPi4 USB/IP | ⏳ Reinstalleres |
+| 10.12.0.183 | win11-admin | Windows 11 VM | ✅ Prod |
+| 10.12.0.196 | AP01-Kontor | Unifi AP | ✅ Prod |
+| 10.12.0.197 | T272AP02-Garasje | Unifi AP | ✅ Prod |
+| 10.12.0.200 | T272SW03-Verksted | Unifi Switch | ✅ Prod |
+| 10.12.0.205 | proxmox | Proxmox Host | ✅ Prod |
 
 ### Tilganger
 - **Ronny**: Full tilgang til alt (Saghaugen + jobb-servere)
 - **Lasse (kollega)**: Administrerer jobb-servere sammen med Ronny
 - **React-HA agent**: Passwordless SSH til Proxmox og alle VM/LXC
 - **General AI**:
-  - Kjører på Proxmox (10.12.0.205)
-  - SSH-tilgang: Under oppsett (root@10.12.0.205)
+  - Kjører på Proxmox LXC 150 (10.12.0.145)
+  - SSH-tilgang til:
+    - Proxmox: `ssh root@10.12.0.205` ✅
+    - UDM-Pro: `ssh root@10.12.0.1` ✅
+    - debian2: `ssh ronny@10.12.0.6` ✅
 
 ---
 
@@ -135,6 +186,56 @@
 - **Når**: Kommer snart
 - **Hensikt**: Bli PERMANENT primær host for alle Saghaugen VM/LXC
 - **Status**: Avventer reinstallasjon
+
+### ESXi VM-er (på HP EliteDesk - skal migreres/avvikles)
+
+#### debian1 (10.12.0.9)
+- **Formål**: Gammel HomeAssistant instans
+- **Status**: Beholdt for backup/referanse
+- **Aksjon**: Ingen - kan slettes etter ESXi reinstall
+
+#### debian2 (10.12.0.6) ⚠️ VIKTIG
+- **OS**: Debian 11 (5.10.0-34-amd64)
+- **Disk**: 97GB (31GB brukt)
+- **SSH**: `ssh ronny@10.12.0.6` (passord: 4pn44SJAg)
+- **Systemtjenester**:
+  - Docker (container runtime)
+  - ZeroTier (VPN/SDN)
+  - Wazuh-agent (security monitoring)
+  - VMware Tools
+
+**Docker containers på debian2:**
+| Container | Status | Vurdering |
+|-----------|--------|-----------|
+| **influxdb** (2.7.3) | Running | ⚠️ VIKTIG - Gammel InfluxDB med historiske data |
+| **grafana** | Running | Duplikat - prod er på 10.12.0.146 |
+| **node-red** | Running | Duplikat - prod er på 10.12.0.24 (Ronny sjekker flows) |
+| **esphome** | Running | Duplikat - prod er på 10.12.0.128 |
+| **pihole** | Running | ❌ Ikke i bruk |
+| **Unifi_controller** | Running | ❌ Ikke i bruk (UDM-Pro har egen) |
+| **mongodb** | Running | Støtte for gammel Unifi controller |
+| **portainer** | Running | Container management |
+| **homarr** | Running | Dashboard |
+| **heimdall** | Running | Dashboard |
+
+**Aksjon for debian2:**
+- [ ] Ronny sjekker Node-RED flows for ting å kopiere
+- [ ] Vurder å eksportere InfluxDB data (nice-to-have, ikke kritisk)
+- [ ] Kan slettes etter ESXi reinstall
+
+#### OMV/NAS (10.12.0.51)
+- **Formål**: OpenMediaVault - filserver/NAS
+- **Status**: Kjører på ESXi
+- **Problem**: Kan ikke flyttes pga diskplass på HP mini-PC
+- **Aksjon**:
+  - [ ] Dokumentere shares og konfigurasjon
+  - [ ] Ta backup av kritiske data
+  - [ ] Reinstallere etter ESXi → Proxmox migrering
+
+#### casaOS (10.12.0.114)
+- **Formål**: Portainer-lignende med ferdige scripts
+- **Status**: ❌ Ikke i bruk lenger
+- **Aksjon**: Kan slettes
 
 ### Jobb-servere (eksternt tilgjengelig via ZeroTier)
 **Antall**: 3 stk heavy duty servere
@@ -210,6 +311,19 @@
 - **Server**: Chirpstack (egen LXC)
 - **Sensorer**: Custom Sensirion-baserte sensorer
 - **Ronnys ekspertise**: God erfaring med LoRaWAN og sensor-design
+
+### RPi4 USB/IP Gateway (zgate2024-2)
+- **IP**: 10.12.0.182
+- **Hostname**: zgate2024-2
+- **Formål**: USB/IP gateway for Zigbee/Z-Wave antenner
+- **Hardware**: Raspberry Pi 4 med Zigbee + Z-Wave USB-dongler
+- **Status**: ⏳ Trenger reinstallasjon (passord ukjent)
+- **Plan**:
+  1. Reinstallere Raspberry Pi OS Lite
+  2. Konfigurere USB/IP server
+  3. Route USB-enheter til Proxmox host
+  4. Viderekoble til respektive LXC-er (Zigbee2MQTT, Z-Wave JS UI)
+- **Aksjon**: Ronny reinstallerer minnekort
 
 ### MQTT
 - **Broker**: Dedikert (EMQ eller lignende)
@@ -339,21 +453,25 @@
 
 ## Kritiske Hull i Dokumentasjonen
 
-**Status etter React-HA integrasjon + jobb-server info (2025-12-03):**
+**Status etter nettverksscan og research (2025-12-05):**
 
 Dokumentert ✅:
 1. ~~**Sikringsskap**~~ - ✅ Fullstendig dokumentert (24 kurs, 3 ledige)
 2. ~~**VM/LXC**~~ - ✅ Fullstendig liste med IP-adresser
 3. ~~**Jobb-servere**~~ - ✅ 3x heavy duty, ZeroTier, backup-kapasitet
 4. ~~**Proxmox midlertidig status**~~ - ✅ Tilhører jobb, skal erstattes
+5. ~~**Nettverkskart**~~ - ✅ Komplett kart over alle enheter på 10.12.0.0/24
+6. ~~**ESXi VM-er**~~ - ✅ debian1, debian2, OMV, casaOS kartlagt
+7. ~~**UDM-Pro tilgang**~~ - ✅ SSH passwordless for General AI
+8. ~~**InfluxDB lokasjon**~~ - ✅ Funnet på debian2 (port 8086)
 
 Gjenstår ❌:
-5. **Crestron**: Hvilke enheter? Hvordan konfigurert?
-6. **Zigbee/Z-wave**: Hvilke spesifikke enheter? (vet at Conbee II + Aeotec Z-Stick 7 er gatewayer)
-7. **HP mini-PC (nåværende Proxmox)**: CPU, RAM, disk specs?
-8. **HP EliteDesk specs**: CPU, RAM, disk?
-9. **KNX**: Hvilke enheter utover gulvvarme?
-10. **Jobb-servere**: Detaljerte specs, backup-konfigurasjon
+9. **Crestron**: Hvilke enheter? Hvordan konfigurert?
+10. **Zigbee/Z-wave enheter**: Spesifikke enheter (gatewayer er dokumentert)
+11. **HP mini-PC (nåværende Proxmox)**: CPU, RAM, disk specs?
+12. **HP EliteDesk specs**: CPU, RAM, disk?
+13. **KNX**: Hvilke enheter utover gulvvarme?
+14. **Jobb-servere**: Detaljerte specs, backup-konfigurasjon
 
 **Strategi**: Fylles inn gradvis når agenter trenger informasjonen eller når Ronny gir info.
 

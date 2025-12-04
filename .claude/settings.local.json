@@ -39,7 +39,20 @@
       "Bash(npm --version:*)",
       "Bash(claude:*)",
       "Bash(sshpass -p '4pn44SJAg' ssh -o StrictHostKeyChecking=no root@10.12.0.20 'echo \"\"SSH OK\"\" && cat /home/homeassistant/.ssh/authorized_keys 2>/dev/null | head -5 || echo \"\"Ingen authorized_keys enda\"\"')",
-      "Bash(MY_KEY=\"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMJC6psHByR5D24yc6Nw8b2OOkbOX4QMVZ0tHahzTeAt general-ai@saghaugen.no\":*)"
+      "Bash(MY_KEY=\"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMJC6psHByR5D24yc6Nw8b2OOkbOX4QMVZ0tHahzTeAt general-ai@saghaugen.no\":*)",
+      "Bash(mkdir:*)",
+      "Bash(git pull:*)",
+      "Bash(sshpass -p '2jDvWCyqqB!aDnK4m!@jr' ssh -o StrictHostKeyChecking=no root@10.12.0.1 'echo \"\"SSH OK\"\" && cat ~/.ssh/authorized_keys 2>/dev/null || echo \"\"Ingen authorized_keys enda\"\"')",
+      "Bash(sshpass -p '2jDvWCyqB!aDnK4m!@jr' ssh -o StrictHostKeyChecking=no root@10.12.0.1 'echo \"\"SSH OK\"\"')",
+      "mcp__context7__resolve-library-id",
+      "Bash(sshpass -p 'Test1234567890' ssh:*)",
+      "Bash(sshpass -p 'Test1234567890' ssh -o StrictHostKeyChecking=no root@10.12.0.1 'mkdir -p ~/.ssh && echo \"\"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMJC6psHByR5D24yc6Nw8b2OOkbOX4QMVZ0tHahzTeAt general-ai@saghaugen.no\"\" >> ~/.ssh/authorized_keys && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys && echo \"\"Nøkkel lagt til!\"\"')",
+      "Bash(sort:*)",
+      "Bash(sshpass -p '4pn44SJAg' ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 root@10.12.0.182 'echo \"\"SSH OK\"\" && hostname')",
+      "Bash(sshpass -p '4pn44SJAg' ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 admin@10.12.0.182 'echo \"\"SSH OK\"\" && hostname')",
+      "Bash(sshpass:*)",
+      "Bash(nmap:*)",
+      "Bash(nc:*)"
     ],
     "deny": [],
     "ask": []
