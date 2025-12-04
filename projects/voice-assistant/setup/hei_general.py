@@ -6,9 +6,10 @@
 En taleassistent for Saghaugen som:
 1. Lytter på tale via mikrofon
 2. Konverterer tale til tekst (Whisper)
-3. Sender til Claude med full Saghaugen-kontekst
-4. Konverterer svar til tale (Piper)
-5. Spiller av svaret
+3. Sjekker for nødsituasjoner (MAYDAY-system)
+4. Sender til Claude med full Saghaugen-kontekst
+5. Konverterer svar til tale (Piper)
+6. Spiller av svaret
 
 Bruk: python3 hei_general.py
 """
@@ -26,6 +27,9 @@ import sounddevice as sd
 from faster_whisper import WhisperModel
 from anthropic import Anthropic
 from dotenv import load_dotenv
+
+# Emergency system
+from emergency import EmergencySystem, is_emergency_request, is_confirmation
 
 # Last miljøvariabler
 load_dotenv()
@@ -112,8 +116,16 @@ class HeiGeneral:
         print("🧠 Kobler til Claude...")
         self.client = Anthropic(api_key=ANTHROPIC_API_KEY)
 
+        # Initialiser Emergency System
+        print("🚨 Aktiverer MAYDAY-system...")
+        self.emergency = EmergencySystem()
+
         # Samtalehistorikk
         self.conversation_history = []
+
+        # Emergency state
+        self.awaiting_emergency_confirmation = False
+        self.pending_emergency_situation = None
 
         print("✅ Klar!")
         print("")
@@ -270,7 +282,45 @@ class HeiGeneral:
                     print("   ⚠️ Kunne ikke forstå, prøv igjen")
                     continue
 
-                # Spør Claude
+                # ============================================================
+                # EMERGENCY CHECK - Sjekk for nødsituasjoner FØR Claude
+                # ============================================================
+
+                # Sjekk om vi venter på bekreftelse for nødanrop
+                if self.awaiting_emergency_confirmation:
+                    if is_confirmation(text):
+                        response = self.emergency.confirm_and_call_113(
+                            self.pending_emergency_situation
+                        )
+                        self.awaiting_emergency_confirmation = False
+                        self.pending_emergency_situation = None
+                    else:
+                        response = "OK, avbryter nødanrop. Si beskjed hvis du trenger hjelp."
+                        self.awaiting_emergency_confirmation = False
+                        self.pending_emergency_situation = None
+                    self.speak(response)
+                    continue
+
+                # Sjekk for distress phrases (skjulte koder)
+                distress = self.emergency.check_distress_phrase(text)
+                if distress:
+                    # Håndter distress STILLE - returner fake response
+                    response = self.emergency.handle_distress(distress)
+                    self.speak(response)
+                    continue
+
+                # Sjekk for eksplisitt nødanrop
+                if is_emergency_request(text):
+                    self.pending_emergency_situation = text
+                    self.awaiting_emergency_confirmation = True
+                    response = self.emergency.request_emergency_call(text)
+                    self.speak(response)
+                    continue
+
+                # ============================================================
+                # NORMAL FLOW - Spør Claude
+                # ============================================================
+
                 response = self.ask_claude(text)
 
                 # Si svaret

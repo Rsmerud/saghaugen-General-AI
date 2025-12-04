@@ -44,6 +44,10 @@ pip install piper-tts
 echo "🧠 Installerer Anthropic SDK..."
 pip install anthropic
 
+# Twilio for Emergency System
+echo "🚨 Installerer Twilio (nødsystem)..."
+pip install twilio
+
 # Ekstra nyttige pakker
 pip install python-dotenv requests
 
