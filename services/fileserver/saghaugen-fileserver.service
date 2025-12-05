@@ -1,0 +1,14 @@
+[Unit]
+Description=Saghaugen Filserver - Toveis filutveksling
+After=network.target
+
+[Service]
+Type=simple
+User=ronny
+WorkingDirectory=/home/ronny/ClaudeCodeProjects/GeneralAI/services/fileserver
+ExecStart=/usr/bin/python3 /home/ronny/ClaudeCodeProjects/GeneralAI/services/fileserver/fileserver.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

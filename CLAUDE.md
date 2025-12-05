@@ -54,7 +54,7 @@ Dette er General AI (ordspill på general/generell) - CTO-agenten for Saghaugen.
 - Sofia (f. 1999, Mays datter) - bor i Oslo
 - Mikael (f. 1997, Mays sønn) - bor på Lillehammer
 
-**Miljø:** Midt i skogen med aktivt dyreliv.
+**Miljø:** Midt i skogen med aktivt dyreliv. En del skog er hugget nylig, så flyfoto fra Norge i bilder stemmer ikke med virkeligheten. Lasse har drone og kan ta oppdaterte bilder ved behov.
 
 **Verksted (30 kvm isolert rom i låven):**
 - Søylebor-maskin
@@ -107,8 +107,22 @@ Dette er General AI (ordspill på general/generell) - CTO-agenten for Saghaugen.
 - Plan: Flytte alle VM/LXC tilbake til HP EliteDesk når Proxmox er installert der
 - Mer infrastruktur vil flyttes til låven over tid
 
+**LXC150 - General AI Container (PÅGÅENDE PROBLEM):**
+- General AI (denne Claude Code instansen) kjører på LXC150
+- **Problem:** Containeren er upriviligert, og vi trenger privilegert modus for Playwright
+- **Hva vi har prøvd (uten hell):**
+  - Endret fra Proxmox GUI
+  - Shell-kommandoer for å endre config
+  - Script for å sette privilegert modus
+- **Status:** Containeren nekter å bli privilegert uansett hva vi prøver
+- **Konsekvens:** Jeg har kappet mine egne bein flere ganger i dag ved å restarte containeren
+- **Mulige løsninger:**
+  - Sette opp en VM i stedet for LXC
+  - Reinstallere/opprette LXC containeren på nytt som privilegert fra starten
+- **VIKTIG:** IKKE restart LXC150 uten å tenke deg om - du kapper dine egne bein!
+
 **Kollega:**
-- "Claude Code React-HA" - kjører i VS Code terminal på Windows 10 VM
+- "Claude Code React-HA" - kjører nå på LXC150 sammen med General AI (flyttet fra Windows 10 VM)
 - Har passwordless SSH til Proxmox og alle VM/LXC
 - Ansvar for eksisterende infrastruktur:
   - 2x HomeAssistant instanser (prod + test) med RemoteHomeAssistant kommunikasjon
@@ -117,7 +131,7 @@ Dette er General AI (ordspill på general/generell) - CTO-agenten for Saghaugen.
   - Node-Red og Grafana
   - Chirpstack
   - Custom React dashboard for 10" panel i entre
-- Møtes om noen dager for overlapping/koordinering
+- Nå samlokalisert - koordinering skjer løpende
 
 **Nettverk:**
 - ISP: Starlink (fiber er bestilt, leveringsdato uklar)
@@ -125,6 +139,17 @@ Dette er General AI (ordspill på general/generell) - CTO-agenten for Saghaugen.
 - MikroTik også i bruk (Ronny liker begge merkene)
 - Nåværende lokasjon: Provisorisk i huset
 - Fremtidig plan: Starlink, UDM og switcher monteres i låve, fiber trekkes til hus
+
+**Saghaugen Filserver (TOVEIS FILUTVEKSLING):**
+- **URL:** `http://10.12.0.145:8888`
+- **Formål:** Enkel filutveksling mellom Ronny (Windows/browser) og General AI
+- **Mapper:**
+  - `/home/ronny/ClaudeCodeProjects/GeneralAI/fildeling/fra_ronny/` - Filer Ronny laster opp
+  - `/home/ronny/ClaudeCodeProjects/GeneralAI/fildeling/til_ronny/` - Filer General AI legger klar for nedlasting
+- **Features:** Upload, download, vis, slett - alt via web-GUI med mørkt tema
+- **Service:** `saghaugen-fileserver.service` (systemd, starter automatisk ved boot)
+- **Kildekode:** `/home/ronny/ClaudeCodeProjects/GeneralAI/services/fileserver/fileserver.py`
+- **Bruksområder:** Screenshots, inspirasjonsbilder, flyfoto, dokumenter, hva som helst!
 
 ## Ronnys Kompetanse
 
