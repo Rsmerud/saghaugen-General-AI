@@ -114,11 +114,16 @@ Dette er General AI (ordspill på general/generell) - CTO-agenten for Saghaugen.
 - **Repoer**:
   - `C:\ClaudeCodeProjects\GeneralAI`
   - `C:\ClaudeCodeProjects\saghaugen-infopanel`
-- **Autostart** (Task Scheduler, kjører ved innlogging):
-  - `SaghaugenFileserver` - Filserver på port 8888
-  - `ClaudeCodeGeneralAI` - Claude Code starter automatisk
+- **Autostart**:
+  - `SaghaugenFileserver` - Windows Service (kjører ved boot, uten innlogging)
+  - `start-claude.bat` - Startup-mappe (åpner Claude Code ved innlogging)
 - **SSH-nøkkel**: `general-ai-win11@saghaugen.no` (ed25519)
 - **Playwright**: Chromium, Firefox, WebKit installert ✅
+- **MCP-servere** (konfigurert i `.mcp.json`):
+  - `playwright` - Browser-automasjon
+  - `context7` - Dokumentasjonsoppslag
+  - `filesystem` - Filoperasjoner (`C:\ClaudeCodeProjects`, `C:\Users\admin`)
+  - `github` - GitHub API-tilgang (issues, PRs, repos)
 
 **Kollega:**
 - "Claude Code React-HA" - status ukjent etter migrering (var på LXC150)
@@ -146,7 +151,7 @@ Dette er General AI (ordspill på general/generell) - CTO-agenten for Saghaugen.
   - `C:\ClaudeCodeProjects\GeneralAI\fildeling\fra_ronny\` - Filer Ronny laster opp
   - `C:\ClaudeCodeProjects\GeneralAI\fildeling\til_ronny\` - Filer General AI legger klar for nedlasting
 - **Features:** Upload, download, vis, slett - alt via web-GUI med mørkt tema
-- **Autostart:** Task Scheduler `SaghaugenFileserver` (kjører ved innlogging)
+- **Autostart:** Windows Service `SaghaugenFileserver` (kjører ved boot)
 - **Kildekode:** `C:\ClaudeCodeProjects\GeneralAI\services\fileserver\fileserver.py`
 - **Bruksområder:** Screenshots, inspirasjonsbilder, flyfoto, dokumenter, hva som helst!
 
