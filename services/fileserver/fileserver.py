@@ -17,8 +17,12 @@ import urllib.parse
 from datetime import datetime
 from pathlib import Path
 
-# Konfigurasjon
-BASE_DIR = Path("/home/ronny/ClaudeCodeProjects/GeneralAI/fildeling")
+# Konfigurasjon - Auto-detect OS
+import platform
+if platform.system() == "Windows":
+    BASE_DIR = Path("C:/ClaudeCodeProjects/GeneralAI/fildeling")
+else:
+    BASE_DIR = Path("/home/ronny/ClaudeCodeProjects/GeneralAI/fildeling")
 UPLOAD_DIR = BASE_DIR / "fra_ronny"
 DOWNLOAD_DIR = BASE_DIR / "til_ronny"
 PORT = 8888

@@ -107,22 +107,21 @@ Dette er General AI (ordspill på general/generell) - CTO-agenten for Saghaugen.
 - Plan: Flytte alle VM/LXC tilbake til HP EliteDesk når Proxmox er installert der
 - Mer infrastruktur vil flyttes til låven over tid
 
-**LXC150 - General AI Container (PÅGÅENDE PROBLEM):**
-- General AI (denne Claude Code instansen) kjører på LXC150
-- **Problem:** Containeren er upriviligert, og vi trenger privilegert modus for Playwright
-- **Hva vi har prøvd (uten hell):**
-  - Endret fra Proxmox GUI
-  - Shell-kommandoer for å endre config
-  - Script for å sette privilegert modus
-- **Status:** Containeren nekter å bli privilegert uansett hva vi prøver
-- **Konsekvens:** Jeg har kappet mine egne bein flere ganger i dag ved å restarte containeren
-- **Mulige løsninger:**
-  - Sette opp en VM i stedet for LXC
-  - Reinstallere/opprette LXC containeren på nytt som privilegert fra starten
-- **VIKTIG:** IKKE restart LXC150 uten å tenke deg om - du kapper dine egne bein!
+**Windows 11 VM - General AI (PERMANENT LØSNING):**
+- **IP**: 10.12.0.183 (LAN) / 10.144.151.76 (ZeroTier)
+- **OS**: Windows 11 (Build 26200.7462)
+- **Migrert fra**: LXC150 (2025-12-11) pga Playwright-problemer med unprivileged containers
+- **Repoer**:
+  - `C:\ClaudeCodeProjects\GeneralAI`
+  - `C:\ClaudeCodeProjects\saghaugen-infopanel`
+- **Autostart** (Task Scheduler, kjører ved innlogging):
+  - `SaghaugenFileserver` - Filserver på port 8888
+  - `ClaudeCodeGeneralAI` - Claude Code starter automatisk
+- **SSH-nøkkel**: `general-ai-win11@saghaugen.no` (ed25519)
+- **Playwright**: Chromium, Firefox, WebKit installert ✅
 
 **Kollega:**
-- "Claude Code React-HA" - kjører nå på LXC150 sammen med General AI (flyttet fra Windows 10 VM)
+- "Claude Code React-HA" - status ukjent etter migrering (var på LXC150)
 - Har passwordless SSH til Proxmox og alle VM/LXC
 - Ansvar for eksisterende infrastruktur:
   - 2x HomeAssistant instanser (prod + test) med RemoteHomeAssistant kommunikasjon
@@ -141,14 +140,14 @@ Dette er General AI (ordspill på general/generell) - CTO-agenten for Saghaugen.
 - Fremtidig plan: Starlink, UDM og switcher monteres i låve, fiber trekkes til hus
 
 **Saghaugen Filserver (TOVEIS FILUTVEKSLING):**
-- **URL:** `http://10.12.0.145:8888`
+- **URL:** `http://10.12.0.183:8888` (ny Windows VM)
 - **Formål:** Enkel filutveksling mellom Ronny (Windows/browser) og General AI
 - **Mapper:**
-  - `/home/ronny/ClaudeCodeProjects/GeneralAI/fildeling/fra_ronny/` - Filer Ronny laster opp
-  - `/home/ronny/ClaudeCodeProjects/GeneralAI/fildeling/til_ronny/` - Filer General AI legger klar for nedlasting
+  - `C:\ClaudeCodeProjects\GeneralAI\fildeling\fra_ronny\` - Filer Ronny laster opp
+  - `C:\ClaudeCodeProjects\GeneralAI\fildeling\til_ronny\` - Filer General AI legger klar for nedlasting
 - **Features:** Upload, download, vis, slett - alt via web-GUI med mørkt tema
-- **Service:** `saghaugen-fileserver.service` (systemd, starter automatisk ved boot)
-- **Kildekode:** `/home/ronny/ClaudeCodeProjects/GeneralAI/services/fileserver/fileserver.py`
+- **Autostart:** Task Scheduler `SaghaugenFileserver` (kjører ved innlogging)
+- **Kildekode:** `C:\ClaudeCodeProjects\GeneralAI\services\fileserver\fileserver.py`
 - **Bruksområder:** Screenshots, inspirasjonsbilder, flyfoto, dokumenter, hva som helst!
 
 ## Ronnys Kompetanse

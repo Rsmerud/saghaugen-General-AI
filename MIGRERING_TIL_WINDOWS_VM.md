@@ -1,87 +1,73 @@
 # Migrering fra LXC150 til Windows VM
 
-## Hvorfor migrere?
-- Playwright funker ikke i upriviligert LXC
-- GUI-apps (Sweet Home 3D etc.) krever hacks for å fungere
+## STATUS: ✅ FULLFØRT (2025-12-11)
+
+General AI kjører nå på Windows 11 VM (10.12.0.183).
+
+---
+
+## Hvorfor migrering var nødvendig
+- Playwright funket ikke i upriviligert LXC
+- GUI-apps (Sweet Home 3D etc.) krevde hacks for å fungere
 - Windows VM gir enklere fildeling, RDP, og alt "bare funker"
 
-## Agenter som skal migreres
+## Hva som ble gjort
 
-### 1. General AI (denne instansen)
-- **Repo:** `/home/ronny/ClaudeCodeProjects/GeneralAI`
-- **GitHub:** Sørg for alt er pushet før migrering
-
-### 2. React-HA (kollega)
-- **Repo:** Finn lokasjon og sørg for alt er pushet
-- **Notater:** Sjekk om det er noe som ikke er i git
-
-## Tjenester som kjører på LXC150
-
-### Saghaugen Filserver
-- **Service:** `saghaugen-fileserver.service`
-- **Port:** 8888
-- **Beslutning:** Trenger vi denne på Windows? Sannsynligvis ikke - kan bruke delt mappe i stedet
-
-## Før migrering - SJEKKLISTE
-
-### Git status for begge repoer:
-- [ ] `GeneralAI`: Commit og push alle endringer
-- [ ] `React-HA`: Commit og push alle endringer
-
-### Filer som IKKE er i git:
-- [ ] `/home/ronny/ClaudeCodeProjects/GeneralAI/fildeling/` - Kopier viktige filer
-- [ ] Sjekk for andre lokale filer
-
-### SSH-nøkler:
-- [ ] Dokumenter hvilke nøkler som brukes
-- [ ] Sett opp på nytt i Windows VM (eller kopier)
-
-### Tjenester å stoppe:
-- [ ] `sudo systemctl stop saghaugen-fileserver`
-- [ ] `sudo systemctl disable saghaugen-fileserver`
-
-## På Windows VM - OPPSETT
-
-### 1. Installer nødvendig programvare:
-- [ ] VS Code
-- [ ] Node.js (for Claude Code)
-- [ ] Git
-- [ ] Claude Code (`npm install -g @anthropic-ai/claude-code` eller tilsvarende)
-
-### 2. Clone repoer:
-```powershell
-cd C:\Users\<bruker>\ClaudeCodeProjects
-git clone <GeneralAI-repo-url>
-git clone <React-HA-repo-url>
+### 1. Repoer clonet ✅
+```
+C:\ClaudeCodeProjects\GeneralAI
+C:\ClaudeCodeProjects\saghaugen-infopanel
 ```
 
-### 3. SSH-oppsett:
-- [ ] Generer eller kopier SSH-nøkler
-- [ ] Sett opp `~/.ssh/config` for enkel tilgang til Proxmox og LXC-er
+### 2. Playwright installert ✅
+- Chromium 143.0
+- Firefox 144.0
+- WebKit 26.0
+- FFMPEG
 
-### 4. Test Playwright:
-```powershell
-npx playwright install
-npx playwright test  # eller bare test at browseren starter
+### 3. SSH-nøkkel generert ✅
 ```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgSqskliWgmAQCaRShoiJSgpv4fcs79MKS0VHl87Anr general-ai-win11@saghaugen.no
+```
+Lagt til på Proxmox (10.12.0.205).
 
-### 5. Verifiser tilgang:
-- [ ] SSH til Proxmox
-- [ ] SSH til HomeAssistant LXC
-- [ ] SSH til andre relevante VM/LXC
+### 4. Filserver satt opp ✅
+- **URL:** http://10.12.0.183:8888
+- **Mapper:**
+  - `C:\ClaudeCodeProjects\GeneralAI\fildeling\fra_ronny\`
+  - `C:\ClaudeCodeProjects\GeneralAI\fildeling\til_ronny\`
+- **Autostart:** Task Scheduler `SaghaugenFileserver`
 
-## Etter migrering
+### 5. Claude Code autostart ✅
+- **Task:** `ClaudeCodeGeneralAI`
+- **Trigger:** Ved brukerinnlogging
+- **Working directory:** `C:\ClaudeCodeProjects\GeneralAI`
 
-### Oppdater CLAUDE.md:
-- Endre info om at vi kjører på Windows VM, ikke LXC150
-- Fjern LXC150-problemseksjonen
-- Oppdater filserver-info (eller fjern hvis vi bruker delt mappe)
+## Filer opprettet under migrering
 
-### Vurder hva som skal skje med LXC150:
-- [ ] Beholde som backup?
-- [ ] Slette?
-- [ ] Bruke til noe annet?
+| Fil | Formål |
+|-----|--------|
+| `services/autostart/setup-autostart.ps1` | PowerShell-script for Task Scheduler oppsett |
+| `services/fileserver/install-service.ps1` | Alternativt script for Windows Service (krever admin) |
 
-## Notater
-- Filserveren (`http://10.12.0.145:8888`) blir borte når LXC150 stoppes
-- Husk å laste ned eventuelle filer fra `/fildeling/` først!
+## Nettverksinfo
+
+| Type | IP |
+|------|-----|
+| LAN | 10.12.0.183 |
+| ZeroTier | 10.144.151.76 |
+
+## Gjenstår
+
+### React-HA agent
+- Status ukjent etter migrering
+- Var på LXC150 - må avklares om den skal flyttes hit eller kjøre et annet sted
+
+### LXC150
+- Kan nå slettes eller gjenbrukes til noe annet
+- Alle viktige ting er migrert
+
+---
+
+**Migrert av:** General AI
+**Dato:** 2025-12-11

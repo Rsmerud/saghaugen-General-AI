@@ -1,6 +1,6 @@
 # Saghaugen - Nåværende Infrastruktur
 
-**Sist oppdatert**: 2025-12-05
+**Sist oppdatert**: 2025-12-11
 **Eier**: General AI (holder dette oppdatert basert på agent-rapporter og Ronny's input)
 
 ---
@@ -143,14 +143,14 @@
 | 10.12.0.120 | shellyplusplugs | Shelly plugg | ✅ Prod |
 | 10.12.0.127 | T272AP01-Utendrs | Unifi AP | ✅ Prod |
 | 10.12.0.128 | esphome | ESPHome | ✅ Prod |
-| 10.12.0.145 | claude-agents | General AI (LXC 150) | ✅ Prod |
+| 10.12.0.145 | claude-agents | LXC 150 (utgått) | ❌ Migrert |
 | 10.12.0.146 | grafana | Grafana | ✅ Prod |
 | 10.12.0.150 | homebox | Homebox | ✅ Prod |
 | 10.12.0.154 | HageSor | Reolink kamera | ✅ Prod |
 | 10.12.0.155 | Garasje | Reolink kamera | ✅ Prod |
 | 10.12.0.181 | T272AP03Kjkken | Unifi AP | ✅ Prod |
 | 10.12.0.182 | zgate2024-2 | RPi4 USB/IP | ⏳ Reinstalleres |
-| 10.12.0.183 | win11-admin | Windows 11 VM | ✅ Prod |
+| 10.12.0.183 | win11-admin | Windows 11 VM (General AI) | ✅ Prod |
 | 10.12.0.196 | AP01-Kontor | Unifi AP | ✅ Prod |
 | 10.12.0.197 | T272AP02-Garasje | Unifi AP | ✅ Prod |
 | 10.12.0.200 | T272SW03-Verksted | Unifi Switch | ✅ Prod |
