@@ -122,6 +122,12 @@ action:
 - Timeout på lys-av kan justeres
 - Vurder å legge til manuell overstyring via bryter
 
+### Utelys (TODO)
+- IKEA Trådfri pære med justerbar fargetemperatur
+- Skal paires til Zigbee2MQTT garasje
+- Pairing-forsøk 2025-12-14: Mislyktes, prøver igjen
+- Reset-metode: 6x av/på (1 sek intervaller) til den blinker
+
 ---
 
 ## Oppdateringslogg
