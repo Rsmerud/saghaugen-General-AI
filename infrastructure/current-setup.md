@@ -149,7 +149,7 @@
 | 10.12.0.154 | HageSor | Reolink kamera | ✅ Prod |
 | 10.12.0.155 | Garasje | Reolink kamera | ✅ Prod |
 | 10.12.0.181 | T272AP03Kjkken | Unifi AP | ✅ Prod |
-| 10.12.0.182 | zgate2024-2 | RPi4 USB/IP | ⏳ Reinstalleres |
+| 10.12.0.188 | usb-ip-1 | RPi3 B+ USB/IP | ⏳ USB/IP mangler |
 | 10.12.0.183 | win11-admin | Windows 11 VM (General AI) | ✅ Prod |
 | 10.12.0.196 | AP01-Kontor | Unifi AP | ✅ Prod |
 | 10.12.0.197 | T272AP02-Garasje | Unifi AP | ✅ Prod |
@@ -312,18 +312,24 @@
 - **Sensorer**: Custom Sensirion-baserte sensorer
 - **Ronnys ekspertise**: God erfaring med LoRaWAN og sensor-design
 
-### RPi4 USB/IP Gateway (zgate2024-2)
-- **IP**: 10.12.0.182
-- **Hostname**: zgate2024-2
+### RPi3 B+ USB/IP Gateway (usb-ip-1)
+- **IP**: 10.12.0.188 (WiFi) / TBD (eth0 - DHCP fungerer ikke)
+- **Hostname**: usb-ip-1
 - **Formål**: USB/IP gateway for Zigbee/Z-Wave antenner
-- **Hardware**: Raspberry Pi 4 med Zigbee + Z-Wave USB-dongler
-- **Status**: ⏳ Trenger reinstallasjon (passord ukjent)
-- **Plan**:
-  1. Reinstallere Raspberry Pi OS Lite
-  2. Konfigurere USB/IP server
-  3. Route USB-enheter til Proxmox host
-  4. Viderekoble til respektive LXC-er (Zigbee2MQTT, Z-Wave JS UI)
-- **Aksjon**: Ronny reinstallerer minnekort
+- **Hardware**: Raspberry Pi 3 B+ (RPi4 reservert til tale-assistent)
+- **USB-enheter**:
+  - Nabu Casa ZBT-2 (Zigbee) → /dev/ttyACM0
+  - Nabu Casa ZWA-2 (Z-Wave) → /dev/ttyACM1
+- **Bruker**: ronny / 4pn44SJAg
+- **SSH**: Passwordless fra General AI ✅
+- **Status**: ⏳ USB/IP ikke installert ennå
+- **Plan**: Se `docs/planer/usb-ip-gateway.md` for detaljer
+- **Neste steg**:
+  1. Fikse eth0 kabel-IP (DHCP eller statisk)
+  2. Installere USB/IP på RPi3
+  3. Konfigurere USB/IP server
+  4. Sette opp client på Proxmox
+  5. Passthrough til LXC 111 og 113
 
 ### MQTT
 - **Broker**: Dedikert (EMQ eller lignende)

@@ -48,13 +48,15 @@ Dokumentert: 2025-12-03
 
 ### Fremtidige Planer
 
-**Garasje USB/IP Architecture**:
-- RPi4 (CM4 på carrier board) med PoE Hat i garasjen
-- Z-Wave og Zigbee dongles plugget i RPi4
+**USB/IP Gateway Architecture**:
+- RPi3 B+ (usb-ip-1) på 10.12.0.188
+- Nabu Casa ZBT-2 (Zigbee) og ZWA-2 (Z-Wave) tilkoblet
 - USB/IP eksponerer dongles over nettverk
 - Proxmox binder USB-enheter via USB/IP client
 - LXC 111 (zigbee2mqtt-garasje) og LXC 113 (zwave-js-ui-garasje) får tilgang som om lokalt tilkoblet
 - Ingen failover - garasje-automatisering er nice-to-have
+- **Status**: USB/IP ikke installert ennå (se `docs/planer/usb-ip-gateway.md`)
+- **Merk**: RPi4 er reservert til tale-assistent prosjekt
 
 **Energi og Strømforsyning**:
 - Solceller
