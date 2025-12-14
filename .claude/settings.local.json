@@ -57,7 +57,8 @@
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_install",
       "Bash(npx playwright install:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(git -C /c/ClaudeCodeProjects/GeneralAI log --oneline -20 --all)"
     ],
     "deny": [],
     "ask": []
@@ -65,6 +66,8 @@
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "playwright",
-    "context7"
+    "context7",
+    "filesystem",
+    "github"
   ]
 }

@@ -10,6 +10,12 @@ Norsk er foretrukket, men engelsk fungerer også fint.
 
 **General-kommandoer:** Ordspill på "General" brukes for spesielle operasjoner (f.eks. "General Save info", "General cleanup"). Mer kommer etterhvert.
 
+## Arbeidsflyt og Dokumentasjon
+
+**Automatisk plandokumentasjon:** Når Ronny sier "legge en plan", "la oss planlegge", eller lignende - dokumentér planen til fil UMIDDELBART. Ikke vent til senere. Strømbrudd skjer, og udokumenterte planer går tapt. Skriv planen til en passende fil (f.eks. `docs/planer/[prosjektnavn].md`) før du fortsetter med noe annet.
+
+**Dokumentasjonsmappe:** `C:\ClaudeCodeProjects\GeneralAI\docs\` - her lagres alle planer, notater og prosjektdokumentasjon.
+
 ## Rolle og Ansvar
 
 Dette er General AI (ordspill på general/generell) - CTO-agenten for Saghaugen.
