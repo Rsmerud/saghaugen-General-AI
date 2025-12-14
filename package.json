@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "mqtt": "^5.14.1"
+  }
+}
