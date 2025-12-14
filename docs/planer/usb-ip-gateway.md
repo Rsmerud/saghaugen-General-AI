@@ -1,7 +1,7 @@
 # USB/IP Gateway - RPi3 B+ Setup
 
 **Opprettet**: 2025-12-14
-**Status**: Under arbeid
+**Status**: ✅ FERDIG (kun eth0 kabel-IP gjenstår)
 **Formål**: Eksponere Zigbee og Z-Wave USB-dongler over nettverk til Proxmox LXC-er
 
 ---
@@ -13,35 +13,37 @@
 | **Gateway** | Raspberry Pi 3 B+ |
 | **Hostname** | usb-ip-1 |
 | **WiFi IP** | 10.12.0.188 |
-| **Kabel IP** | TBD (DHCP fungerer ikke ennå) |
+| **Kabel IP** | TBD (switch-problemer under oppsett) |
 | **Bruker** | ronny / 4pn44SJAg |
 | **SSH** | Passwordless fra General AI ✅ |
 
 ### USB-enheter tilkoblet
 
-| Enhet | USB ID | Symlink | Device |
-|-------|--------|---------|--------|
-| **Nabu Casa ZBT-2** (Zigbee) | 303a:831a | `usb-Nabu_Casa_ZBT-2_9C139EACFF0C-if00` | /dev/ttyACM0 |
-| **Nabu Casa ZWA-2** (Z-Wave) | 303a:4001 | `usb-Nabu_Casa_ZWA-2_80B54EE5AFB8-if00` | /dev/ttyACM1 |
+| Enhet | USB ID | Bus ID | Symlink |
+|-------|--------|--------|---------|
+| **Nabu Casa ZBT-2** (Zigbee) | 303a:831a | 1-1.1.3 | `usb-Nabu_Casa_ZBT-2_9C139EACFF0C-if00` |
+| **Nabu Casa ZWA-2** (Z-Wave) | 303a:4001 | 1-1.1.2 | `usb-Nabu_Casa_ZWA-2_80B54EE5AFB8-if00` |
 
 ---
 
-## Mål-arkitektur
+## Arkitektur (IMPLEMENTERT)
 
 ```
 ┌─────────────────┐     USB/IP      ┌─────────────────┐
-│  RPi3 B+ (usb-ip-1)              │  Proxmox Host   │
+│  RPi3 B+ (usb-ip-1)   :3240      │  Proxmox Host   │
 │  10.12.0.188    │ ─────────────► │  10.12.0.205    │
 │                 │                 │                 │
 │  ┌───────────┐  │                 │  ┌───────────┐  │
 │  │ ZBT-2     │  │                 │  │ LXC 111   │  │
 │  │ (Zigbee)  │──┼─────────────────┼─►│ zigbee2mqtt│  │
-│  └───────────┘  │                 │  │ -garasje  │  │
-│                 │                 │  └───────────┘  │
+│  │ 1-1.1.3   │  │                 │  │ /dev/ttyZigbee│
+│  └───────────┘  │                 │  └───────────┘  │
+│                 │                 │                 │
 │  ┌───────────┐  │                 │  ┌───────────┐  │
 │  │ ZWA-2     │  │                 │  │ LXC 113   │  │
 │  │ (Z-Wave)  │──┼─────────────────┼─►│ zwave-js  │  │
-│  └───────────┘  │                 │  │ -garasje  │  │
+│  │ 1-1.1.2   │  │                 │  │ /dev/ttyZwave │
+│  └───────────┘  │                 │  └───────────┘  │
 └─────────────────┘                 └───────────────┘
 ```
 
@@ -53,43 +55,26 @@
 - [x] SSH passwordless konfigurert
 - [x] USB-enheter tilkoblet og synlige
 - [x] Symlinks fungerer
-- [ ] eth0 kabel-IP (DHCP svarer ikke - sjekk switch/port)
-- [ ] USB/IP installert på RPi3
-- [ ] USB/IP server konfigurert
-- [ ] USB/IP client på Proxmox
-- [ ] Enheter bundet til LXC 111 og 113
+- [ ] eth0 kabel-IP (switch hang etter strømbrudd - Ronny fikser)
+- [x] USB/IP installert på RPi3
+- [x] USB/IP server konfigurert (systemd service)
+- [x] USB/IP client på Proxmox (systemd service)
+- [x] Enheter synlige i LXC 111 og 113
 
 ---
 
-## Implementeringsplan
+## Implementert konfigurasjon
 
-### Steg 1: Fikse nettverk (Ronny)
-eth0 får bare link-local IP (169.254.x.x). Mulige årsaker:
-- Kabel ikke i DHCP-aktivert port
-- Feil VLAN
-- Kabel-problem
+### RPi3 (Server-side)
 
-**Anbefaling**: Bruk statisk IP på eth0 for stabilitet:
+**Kernel-modul** (persistent):
 ```bash
-# I /etc/dhcpcd.conf:
-interface eth0
-static ip_address=10.12.0.188/24
-static routers=10.12.0.1
-static domain_name_servers=10.12.0.1
+# /etc/modules-load.d/usbip.conf
+usbip_host
 ```
 
-### Steg 2: Installere USB/IP på RPi3
-```bash
-sudo apt update
-sudo apt install linux-tools-generic usbip hwdata
-sudo modprobe usbip_host
-echo "usbip_host" | sudo tee /etc/modules-load.d/usbip.conf
-```
-
-### Steg 3: Konfigurere USB/IP server
-Lag systemd service for usbipd:
-```bash
-# /etc/systemd/system/usbipd.service
+**Systemd service** (`/etc/systemd/system/usbipd.service`):
+```ini
 [Unit]
 Description=USB/IP Host Daemon
 After=network.target
@@ -97,44 +82,95 @@ After=network.target
 [Service]
 Type=forking
 ExecStart=/usr/sbin/usbipd -D
-ExecStartPost=/bin/sleep 1
-ExecStartPost=/usr/sbin/usbip bind -b 1-1.2  # ZBT-2
-ExecStartPost=/usr/sbin/usbip bind -b 1-1.4  # ZWA-2 (busid må verifiseres)
+ExecStartPost=/bin/sleep 2
+ExecStartPost=/usr/sbin/usbip bind -b 1-1.1.3
+ExecStartPost=/usr/sbin/usbip bind -b 1-1.1.2
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-### Steg 4: USB/IP client på Proxmox
-```bash
-# På Proxmox host (10.12.0.205):
-apt install linux-tools-$(uname -r) hwdata
-modprobe vhci-hcd
-echo "vhci-hcd" >> /etc/modules-load.d/usbip.conf
+### Proxmox (Client-side)
 
-# Attach enheter:
-usbip attach -r 10.12.0.188 -b 1-1.2  # ZBT-2
-usbip attach -r 10.12.0.188 -b 1-1.4  # ZWA-2
+**Kernel-modul** (persistent):
+```bash
+# /etc/modules-load.d/usbip-client.conf
+vhci-hcd
 ```
 
-### Steg 5: Passthrough til LXC
-```bash
-# I /etc/pve/lxc/111.conf (zigbee2mqtt-garasje):
-lxc.cgroup2.devices.allow: c 166:* rwm
-lxc.mount.entry: /dev/ttyACM0 dev/ttyACM0 none bind,optional,create=file
+**Systemd service** (`/etc/systemd/system/usbip-attach.service`):
+```ini
+[Unit]
+Description=USB/IP Client - Attach remote devices
+After=network-online.target
+Wants=network-online.target
 
-# I /etc/pve/lxc/113.conf (zwave-js-ui-garasje):
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/sbin/modprobe vhci-hcd
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/sbin/usbip attach -r 10.12.0.188 -b 1-1.1.3
+ExecStart=/usr/sbin/usbip attach -r 10.12.0.188 -b 1-1.1.2
+ExecStop=/usr/sbin/usbip detach -p 0
+ExecStop=/usr/sbin/usbip detach -p 1
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### LXC Passthrough
+
+**LXC 111** (`/etc/pve/lxc/111.conf`):
+```
+# USB/IP passthrough for Zigbee (ZBT-2)
 lxc.cgroup2.devices.allow: c 166:* rwm
-lxc.mount.entry: /dev/ttyACM1 dev/ttyACM1 none bind,optional,create=file
+lxc.mount.entry: /dev/serial/by-id/usb-Nabu_Casa_ZBT-2_9C139EACFF0C-if00 dev/ttyZigbee none bind,optional,create=file
+```
+
+**LXC 113** (`/etc/pve/lxc/113.conf`):
+```
+# USB/IP passthrough for Z-Wave (ZWA-2)
+lxc.cgroup2.devices.allow: c 166:* rwm
+lxc.mount.entry: /dev/serial/by-id/usb-Nabu_Casa_ZWA-2_80B54EE5AFB8-if00 dev/ttyZwave none bind,optional,create=file
+```
+
+---
+
+## Verifisert funksjonalitet
+
+```bash
+# På LXC 111:
+ls -la /dev/ttyZigbee
+# crw-rw---- 1 nobody nogroup 166, 1 Dec 14 11:51 /dev/ttyZigbee
+
+# På LXC 113:
+ls -la /dev/ttyZwave
+# crw-rw---- 1 root dialout 166, 2 Dec 14 11:51 /dev/ttyZwave
 ```
 
 ---
 
 ## Notater
 
-- **RPi4 er reservert** til tale-assistent prosjekt (ikke bruk den til dette)
+- **RPi4 er reservert** til tale-assistent prosjekt
 - **Ingen failover** - garasje-automatisering er nice-to-have
-- Bus IDs (`1-1.2`, `1-1.4`) må verifiseres med `usbip list -l` før binding
+- **WiFi er midlertidig** - bør byttes til kabel når switch er fikset
+- **Reboot-test gjenstår** - verifiser at alt starter automatisk
+
+---
+
+## Gjenstående oppgaver
+
+1. [ ] Fikse eth0 kabel-IP på RPi3 (switch-problemer)
+2. [ ] Teste reboot av hele stacken (RPi3 → Proxmox → LXC)
+3. [ ] Konfigurere zigbee2mqtt i LXC 111
+4. [ ] Konfigurere zwave-js-ui i LXC 113
+5. [ ] Sette `onboot: 1` på LXC 111 og 113 når alt fungerer
 
 ---
 
@@ -142,4 +178,7 @@ lxc.mount.entry: /dev/ttyACM1 dev/ttyACM1 none bind,optional,create=file
 
 | Dato | Endring |
 |------|---------|
-| 2025-12-14 | Opprettet plan. USB-enheter bekreftet. USB/IP ikke installert ennå. |
+| 2025-12-14 09:30 | Opprettet plan. USB-enheter bekreftet. |
+| 2025-12-14 12:50 | USB/IP server ferdig på RPi3 (systemd service) |
+| 2025-12-14 12:51 | USB/IP client ferdig på Proxmox (systemd service) |
+| 2025-12-14 12:52 | LXC passthrough konfigurert og verifisert |

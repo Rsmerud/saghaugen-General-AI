@@ -149,7 +149,7 @@
 | 10.12.0.154 | HageSor | Reolink kamera | ✅ Prod |
 | 10.12.0.155 | Garasje | Reolink kamera | ✅ Prod |
 | 10.12.0.181 | T272AP03Kjkken | Unifi AP | ✅ Prod |
-| 10.12.0.188 | usb-ip-1 | RPi3 B+ USB/IP | ⏳ USB/IP mangler |
+| 10.12.0.188 | usb-ip-1 | RPi3 B+ USB/IP | ✅ Prod |
 | 10.12.0.183 | win11-admin | Windows 11 VM (General AI) | ✅ Prod |
 | 10.12.0.196 | AP01-Kontor | Unifi AP | ✅ Prod |
 | 10.12.0.197 | T272AP02-Garasje | Unifi AP | ✅ Prod |
@@ -313,23 +313,24 @@
 - **Ronnys ekspertise**: God erfaring med LoRaWAN og sensor-design
 
 ### RPi3 B+ USB/IP Gateway (usb-ip-1)
-- **IP**: 10.12.0.188 (WiFi) / TBD (eth0 - DHCP fungerer ikke)
+- **IP**: 10.12.0.188 (WiFi) / TBD (eth0 - switch-problemer)
 - **Hostname**: usb-ip-1
 - **Formål**: USB/IP gateway for Zigbee/Z-Wave antenner
 - **Hardware**: Raspberry Pi 3 B+ (RPi4 reservert til tale-assistent)
 - **USB-enheter**:
-  - Nabu Casa ZBT-2 (Zigbee) → /dev/ttyACM0
-  - Nabu Casa ZWA-2 (Z-Wave) → /dev/ttyACM1
+  - Nabu Casa ZBT-2 (Zigbee) → Bus 1-1.1.3 → LXC 111 `/dev/ttyZigbee`
+  - Nabu Casa ZWA-2 (Z-Wave) → Bus 1-1.1.2 → LXC 113 `/dev/ttyZwave`
 - **Bruker**: ronny / 4pn44SJAg
 - **SSH**: Passwordless fra General AI ✅
-- **Status**: ⏳ USB/IP ikke installert ennå
-- **Plan**: Se `docs/planer/usb-ip-gateway.md` for detaljer
-- **Neste steg**:
-  1. Fikse eth0 kabel-IP (DHCP eller statisk)
-  2. Installere USB/IP på RPi3
-  3. Konfigurere USB/IP server
-  4. Sette opp client på Proxmox
-  5. Passthrough til LXC 111 og 113
+- **Status**: ✅ USB/IP FERDIG og verifisert!
+- **Services**:
+  - RPi3: `usbipd.service` (binder USB-enheter)
+  - Proxmox: `usbip-attach.service` (attacher remote devices)
+- **Plan**: Se `docs/planer/usb-ip-gateway.md` for full dokumentasjon
+- **Gjenstår**:
+  1. Fikse eth0 kabel-IP (switch hang etter strømbrudd)
+  2. Teste full reboot av stacken
+  3. Konfigurere zigbee2mqtt og zwave-js-ui i LXC-ene
 
 ### MQTT
 - **Broker**: Dedikert (EMQ eller lignende)
