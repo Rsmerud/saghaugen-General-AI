@@ -12,8 +12,8 @@
 |-----------|----------|
 | **Gateway** | Raspberry Pi 3 B+ |
 | **Hostname** | usb-ip-1 |
-| **WiFi IP** | 10.12.0.188 |
-| **Kabel IP** | TBD (switch-problemer under oppsett) |
+| **WiFi IP** | 10.12.0.188 (backup) |
+| **Kabel IP** | 10.12.0.132 (statisk, primær) |
 | **Bruker** | ronny / 4pn44SJAg |
 | **SSH** | Passwordless fra General AI ✅ |
 
@@ -31,7 +31,7 @@
 ```
 ┌─────────────────┐     USB/IP      ┌─────────────────┐
 │  RPi3 B+ (usb-ip-1)   :3240      │  Proxmox Host   │
-│  10.12.0.188    │ ─────────────► │  10.12.0.205    │
+│  10.12.0.132    │ ─────────────► │  10.12.0.205    │
 │                 │                 │                 │
 │  ┌───────────┐  │                 │  ┌───────────┐  │
 │  │ ZBT-2     │  │                 │  │ LXC 111   │  │
@@ -55,7 +55,7 @@
 - [x] SSH passwordless konfigurert
 - [x] USB-enheter tilkoblet og synlige
 - [x] Symlinks fungerer
-- [ ] eth0 kabel-IP (switch hang etter strømbrudd - Ronny fikser)
+- [x] eth0 kabel-IP: 10.12.0.132 (statisk)
 - [x] USB/IP installert på RPi3
 - [x] USB/IP server konfigurert (systemd service)
 - [x] USB/IP client på Proxmox (systemd service)
@@ -112,8 +112,8 @@ Type=oneshot
 RemainAfterExit=yes
 ExecStartPre=/sbin/modprobe vhci-hcd
 ExecStartPre=/bin/sleep 5
-ExecStart=/usr/sbin/usbip attach -r 10.12.0.188 -b 1-1.1.3
-ExecStart=/usr/sbin/usbip attach -r 10.12.0.188 -b 1-1.1.2
+ExecStart=/usr/sbin/usbip attach -r 10.12.0.132 -b 1-1.1.3
+ExecStart=/usr/sbin/usbip attach -r 10.12.0.132 -b 1-1.1.2
 ExecStop=/usr/sbin/usbip detach -p 0
 ExecStop=/usr/sbin/usbip detach -p 1
 Restart=on-failure
@@ -159,14 +159,14 @@ ls -la /dev/ttyZwave
 
 - **RPi4 er reservert** til tale-assistent prosjekt
 - **Ingen failover** - garasje-automatisering er nice-to-have
-- **WiFi er midlertidig** - bør byttes til kabel når switch er fikset
+- **Kabel er primær** (10.12.0.132), WiFi (10.12.0.188) er backup
 - **Reboot-test gjenstår** - verifiser at alt starter automatisk
 
 ---
 
 ## Gjenstående oppgaver
 
-1. [ ] Fikse eth0 kabel-IP på RPi3 (switch-problemer)
+1. [x] ~~Fikse eth0 kabel-IP på RPi3~~ → 10.12.0.132 (statisk)
 2. [ ] Teste reboot av hele stacken (RPi3 → Proxmox → LXC)
 3. [ ] Konfigurere zigbee2mqtt i LXC 111
 4. [ ] Konfigurere zwave-js-ui i LXC 113
@@ -182,3 +182,4 @@ ls -la /dev/ttyZwave
 | 2025-12-14 12:50 | USB/IP server ferdig på RPi3 (systemd service) |
 | 2025-12-14 12:51 | USB/IP client ferdig på Proxmox (systemd service) |
 | 2025-12-14 12:52 | LXC passthrough konfigurert og verifisert |
+| 2025-12-14 13:05 | Kabel-IP fikset: 10.12.0.132 (statisk). Proxmox service oppdatert. |
