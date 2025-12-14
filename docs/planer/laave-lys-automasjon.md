@@ -112,7 +112,7 @@ action:
 - [x] Fibaro WP04 inkludert (Node 5)
 - [x] Aqara MS01 pairet (0x00158d0007e3186f)
 - [x] Automasjon opprettet i HA
-- [ ] Testet og verifisert i låven
+- [x] Testet og verifisert i låven ✅
 
 ---
 
@@ -132,3 +132,4 @@ action:
 | 2025-12-14 17:30 | Alle 4 Fibaro Wall Plugs inkludert (Node 2-5). |
 | 2025-12-14 17:45 | Aqara MS01 (RTCGQ11LM) pairet og navngitt. |
 | 2025-12-14 18:00 | Automasjoner opprettet i HA via API. Alt ferdig! |
+| 2025-12-14 18:15 | Testet i låven - fungerer perfekt! |
