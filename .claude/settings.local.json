@@ -70,7 +70,12 @@
       "Bash(\"http://10.12.0.20:8123/api/config/automation/config\" )",
       "Bash(\"http://10.12.0.20:8123/api/services/automation/reload\")",
       "Bash(\"http://10.12.0.20:8123/api/config/automation/config/laave_lys_pa\" )",
-      "Bash(\"http://10.12.0.20:8123/api/config/automation/config/laave_lys_av\" )"
+      "Bash(\"http://10.12.0.20:8123/api/config/automation/config/laave_lys_av\" )",
+      "Bash(ping:*)",
+      "Bash(nslookup:*)",
+      "Bash(findstr:*)",
+      "Bash(arp:*)",
+      "WebFetch(domain:www.waveshare.com)"
     ],
     "deny": [],
     "ask": []

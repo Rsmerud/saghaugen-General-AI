@@ -1,9 +1,10 @@
 # 🎙️ General AI Voice Assistant
 
 **Prosjektnavn:** "Hei General"
-**Status:** Planlegging
+**Status:** 🔧 Hardware klar, software neste
 **Prioritet:** 🔥 HØYT (Ronny er HYPED!)
 **Opprettet:** 2025-12-05
+**Hardware:** CM4 8GB + Waveshare PoE 4G Board (se [HARDWARE.md](docs/HARDWARE.md))
 
 ---
 
